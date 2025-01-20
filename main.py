@@ -72,7 +72,7 @@ def index():
         'username': username
     }
 
-    return render_template("information.html", **context)
+    return render_template("inicio.html", **context)
 
 @app.route('/logout')
 def logout():
