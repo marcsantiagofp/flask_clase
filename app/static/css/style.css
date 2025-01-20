@@ -1,117 +1,347 @@
-img{
-    max-width: 50px;
-    height: 50px
+/* RESET GENERAL */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
 
 /* HEADER */
-/* Estilo de la barra de navegación */
-.navbar {
-    background: linear-gradient(45deg, #007bff, #00d4ff); /* Fondo degradado */
-    padding: 10px 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
-  }
-  
-  /* Estilo para los enlaces del menú */
-  .navbar-nav .nav-link {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #fff; /* Color blanco por defecto */
-    padding: 8px 15px;
-    transition: all 0.3s ease;
-  }
-  
-  /* Cambiar color de los enlaces cuando el ratón pasa por encima */
-  .navbar-nav .nav-link:hover {
-    color: #ff9800; /* Naranja brillante al pasar el ratón */
-    text-decoration: underline;
-  }
-  
-  /* Icono de perfil con un toque de color */
-  .navbar-nav .nav-item i {
-    font-size: 1.7rem;
-    color: #fff; /* Color blanco */
-    margin-right: 10px; /* Separación entre el icono y el texto */
-    transition: color 0.3s ease;
-  }
-  
-  /* Cambio de color del icono al pasar el ratón */
-  .navbar-nav .nav-item:hover i {
-    color: #ff9800; /* Cambia a naranja brillante al pasar el ratón */
-  }
-  
-  /* Estilo del logo */
-  .navbar-brand img {
-    border-radius: 50%; /* Para darle una forma redonda al logo */
-    border: 2px solid #fff; /* Borde blanco alrededor del logo */
-    padding: 5px;
-  }
-  
-  /* Estilo para el botón colapsable */
-  .navbar-toggler-icon {
-    background-color: #fff; /* Color blanco para el icono del menú colapsable */
-  }
-  
-
-
-/* FORMULARIO */
-.formulario {
-    background-color: #f8f9fa; /* Color de fons clar */
-    border-radius: 8px; /* Arrodonir les cantonades */
-    padding: 20px; /* Afegir espai intern */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ombra suau per al formulari */
-    max-width: 400px; /* Ample màxim del formulari */
-    margin: 20px auto; /* Centrar el formulari horitzontalment i afegir espai superior i inferior */
+header {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
 }
 
-.formulario h1 {
-    text-align: center; /* Centrar el títol */
-    font-size: 24px; /* Mida de la lletra del títol */
-    color: #343a40; /* Color de text */
-    margin-bottom: 15px; /* Espai entre el títol i el formulari */
+header .logo {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
 }
 
-.formulario .form-group {
-    margin-bottom: 15px; /* Espai entre els camps del formulari */
+header .logo img {
+  height: 65px;
 }
 
-.formulario label {
-    font-weight: bold; /* Fer els labels més destacats */
-    color: #495057; /* Color del text del label */
+header .nav-icons {
+  display: flex;
+  position: absolute;
+  right: 20px;
+  gap: 30PX;
 }
 
-.formulario input[type="text"],
-.formulario input[type="password"],
-.formulario input[type="submit"] {
-    width: 100%; /* Fer que els inputs ocupin tot l'ample */
-    padding: 10px; /* Afegir espai intern als inputs */
-    border-radius: 5px; /* Arrodonir les cantonades dels inputs */
-    border: 1px solid #ced4da; /* Bordes clares per als inputs */
-    box-sizing: border-box; /* Incloure el padding en el càlcul de l'ample */
+header .nav-icons img {
+  height: 40px;
+  cursor: pointer;
 }
 
-.formulario input[type="text"]:focus,
-.formulario input[type="password"]:focus {
-    border-color: #80bdff; /* Canviar el color del bord quan l'input estigui seleccionat */
-    outline: none; /* Treure el contorn per evitar l'efecte per defecte */
+
+/* CONTENEDORES GENERALES */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.formulario input[type="submit"] {
-    background-color: #007bff; /* Color de fons blau */
-    color: white; /* Color de text blanc per al botó */
-    border: none; /* Sense bord per al botó */
-    cursor: pointer; /* Canviar el cursor quan passa per sobre */
-    font-size: 16px; /* Mida de la lletra del botó */
-    padding: 10px 20px; /* Espai intern per al botó */
-    margin-top: 10px; /* Espai superior per separar el botó dels inputs */
+/* LOGIN Y REGISTRO */
+.login-container, .register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
-.formulario input[type="submit"]:hover {
-    background-color: #0056b3; /* Canviar el color de fons quan el botó es passa per sobre */
+.login-box, .register-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  background-color: #eaf3f6;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  max-width: 400px;
+  width: 100%;
 }
 
-.formulario .flash-message {
-    color: red; /* Color per als missatges d'error */
-    font-weight: bold;
-    text-align: center;
-    margin-top: 15px;
+.login-logo, .register-logo {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-form, .register-form {
+  width: 100%;
+}
+
+.login-form .form-group, .register-form .form-group {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.login-form label, .register-form label {
+  font-weight: bold;
+  color: #155c8f;
+  text-align: left;
+  display: block;
+}
+
+.login-form input, .register-form input {
+  padding: 10px;
+  border: 1px solid #d3e2f1;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #155c8f;
+  width: 100%;
+}
+
+.login-form input::placeholder, .register-form input::placeholder {
+  color: #155c8f;
+}
+
+/* BOTONES */
+.primary-btn {
+  background-color: #155c8f;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 20px;
+}
+
+.primary-btn:hover {
+  background-color: #1c1c1c;
+  color: #fff;
+  border: 1px solid #1c1c1c;
+}
+
+.secondary-btn {
+  background-color: #84b4dc;
+  color: #1c1c1c;
+  font-weight: bold;
+  border-radius: 20px;
+}
+
+.secondary-btn:hover {
+  background-color: #fff;
+  color: #1c1c1c;
+  border: 1px solid #1c1c1c;
+}
+
+/* SECCIÓN SLIDER */
+.slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 50vh;
+  color: #155c8f;
+  padding: 20px;
+}
+
+.slider-content {
+  background-color: #eaf3f6;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.slider-content h1 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #1c1c1c;
+}
+
+.slider-content p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+
+/* INFO SECTION */
+.info {
+  display: flex;
+  justify-content: space-around;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+}
+
+.info-card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 250px;
+  margin: 0 auto;
+}
+
+.info-card h2 {
+  font-size: 1.5rem;
+  color: #155c8f;
+  margin-bottom: 0px;
+  font-weight: bold;
+}
+
+.info-card p {
+  font-size: 1rem;
+  color: #1c1c1c;
+  margin-top: -20px;
+}
+
+/* PÁGINA INFORMACIÓN USUARIO */
+.container-usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding: 5px;  /* Reducido el padding aún más */
+  max-width: 1200px;
+  margin-top: 10px;  /* Menos espacio superior */
+  font-family: Arial, sans-serif;
+  color: #1c1c1c;
+}
+
+/* ENCABEZADOS */
+.info-usuario h2 {
+  color: #155c8f;
+  font-weight: bold;
+  margin-top: 5px;  /* Mucho menos espacio arriba */
+  margin-bottom: 5px;  /* Menos espacio debajo */
+  font-size: 1.1rem;  /* Reducimos un poco el tamaño de la fuente */
+  text-align: left;
+}
+
+/* SECCIONES DEL FORMULARIO */
+.info-usuario {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-bottom: 0.5rem;  /* Menos espacio entre secciones */
+}
+
+/* Sección de cada campo dentro del formulario */
+.info-usuario-section {
+  width: 100%;
+  max-width: 400px;  /* Reducimos aún más el ancho máximo */
+  margin-bottom: 5px;  /* Separación más estrecha entre campos */
+}
+
+.info-usuario-section label {
+  display: block;
+  font-size: 0.8rem;  /* Fuente más pequeña */
+  font-weight: bold;
+  margin-bottom: 3px;  /* Menos espacio debajo de las etiquetas */
+  color: #155c8f;
+}
+
+.info-usuario-section input,
+.info-usuario-section select {
+  width: 100%;
+  padding: 6px;  /* Menos padding */
+  font-size: 0.8rem;  /* Fuente más pequeña */
+  border: 1px solid #eaf3f6;
+  background-color: #eaf3f6;
+  margin-bottom: 6px;  /* Separación más estrecha entre los campos */
+}
+
+.info-usuario-section input::placeholder {
+  color: #155c8f;
+}
+
+/* ICONOS CIRCULARES */
+.icon-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;  /* Mayor separación entre los iconos */
+  margin-top: 20px;  /* Ajuste para mayor espacio arriba */
+}
+
+.icon {
+  width: 425px;  /* Aumentamos el tamaño de los iconos */
+  height: 300px;  /* Aumentamos el tamaño de los iconos */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.icon.user-icon {
+  top: 40px;  /* Ajustamos la posición para separarlos más */
+  left: -180px;  /* Alineación más alejada del centro */
+}
+
+.icon.car-icon {
+  bottom: 240px;  /* Ajustamos la posición para separarlos más */
+  right: -160px;  /* Alineación más alejada del centro */
+}
+
+
+/* FOOTER */
+footer {
+  background-color: #155c8f;
+  color: #fff;
+  padding: 20px 0;
+  text-decoration: none;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.footer-content h3 {
+  margin-bottom: 10px;
+}
+
+.footer-content a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-content a:hover {
+  text-decoration: none;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.8rem;
 }
