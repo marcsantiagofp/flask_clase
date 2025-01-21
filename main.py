@@ -21,13 +21,13 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 # Ruta para la página principal (inicio de sesión y registro)
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if 'user_ip' not in session:
         user_ip_information = request.remote_addr
         session["user_ip"] = user_ip_information
         flash("Sessió iniciada. El teu IP s'ha registrat.")
-        return redirect('/index')
+        return redirect('/')
     
     user_ip = session.get("user_ip")
     username = session.get("username")
@@ -45,7 +45,7 @@ def index():
         if user and check_password_hash(user.password, password_input):
             session["username"] = username_input
             flash("Has iniciat sessió correctament.")
-            return redirect('/index')
+            return redirect('/')
         else:
             flash("Nom d'usuari o contrasenya incorrectes.")
     
@@ -63,7 +63,7 @@ def index():
             db.session.add(new_user)
             db.session.commit()
             flash("Usuari creat correctament! Ara pots iniciar sessió.")
-            return redirect('/index')
+            return redirect('/')
 
     context = {
         'ip': user_ip,
@@ -79,7 +79,7 @@ def logout():
     # Eliminar 'username' de la sesión para cerrar la sesión
     session.pop('username', None)
     flash("Has tancat sessió correctament.")
-    return redirect('/index')  # Redirige a la página de inicio o cualquier otra
+    return redirect('/')  # Redirige a la página de inicio o cualquier otra
 
 # Ruta para la página de Parkings
 @app.route('/parkings')
