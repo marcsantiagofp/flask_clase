@@ -74,6 +74,49 @@ def index():
 
     return render_template("inicio.html", **context)
 
+# Ruta para la página de registro
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    register_form = RegisterForm()
+
+    if register_form.validate_on_submit():
+        username_input = register_form.username.data
+        password_input = register_form.password.data
+
+        existing_user = User.query.filter_by(username=username_input).first()
+        if existing_user:
+            flash("Ja existeix un usuari amb aquest nom.")
+        else:
+            hashed_password = generate_password_hash(password_input)
+            new_user = User(username=username_input, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Usuari creat correctament! Ara pots iniciar sessió.")
+            return redirect(url_for('index'))
+
+    return render_template('Registro.html', register_form=register_form)
+
+# Ruta para la página de login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()  # Crear el formulario aquí
+
+    if form.validate_on_submit():  # Si el formulario es válido
+        username = form.username.data
+        password = form.password.data
+
+        # Aquí debería ir tu lógica de validación para verificar si el usuario existe
+        # y si la contraseña es correcta
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            session['username'] = username
+            flash('Inicio de sesión exitoso!')
+            return redirect(url_for('index'))  # Redirigir a la página principal
+        else:
+            flash('Nombre de usuario o contraseña incorrectos.')
+
+    return render_template('Inicio_Sesion.html', form=form)  # Pasar el formulario a la plantilla
+
 @app.route('/logout')
 def logout():
     # Eliminar 'username' de la sesión para cerrar la sesión
