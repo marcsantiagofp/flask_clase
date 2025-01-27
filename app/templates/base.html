@@ -68,6 +68,14 @@
             registerForm.style.display = 'block';
         }
     }
+
+    // Mensajes se cierran automaticamente
+    setTimeout(function() {
+        let flashes = document.querySelectorAll('.alert');
+        flashes.forEach(function(flash) {
+            flash.style.display = 'none';
+        });
+    }, 5000); // 5000 milisegundos = 5 segundos
 </script>
 {% endblock %}
 
