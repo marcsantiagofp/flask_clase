@@ -26,7 +26,7 @@ def index():
     if 'user_ip' not in session:
         user_ip_information = request.remote_addr
         session["user_ip"] = user_ip_information
-        flash("Sessió iniciada. El teu IP s'ha registrat.")
+        # flash("Sessió iniciada. El teu IP s'ha registrat.")
         return redirect('/')
     
     user_ip = session.get("user_ip")
@@ -117,22 +117,82 @@ def login():
 
     return render_template('Inicio_Sesion.html', form=form)  # Pasar el formulario a la plantilla
 
+# Cerrar session
 @app.route('/logout')
 def logout():
     # Eliminar 'username' de la sesión para cerrar la sesión
     session.pop('username', None)
-    flash("Has tancat sessió correctament.")
-    return redirect('/')  # Redirige a la página de inicio o cualquier otra
+    flash("Has cerrado sesión correctamente.")
+    return redirect(url_for('index'))  # Redirige a la página de inicio
 
 # Ruta para la página de Parkings
 @app.route('/parkings')
 def parkings():
     return render_template('parkings.html')
 
-# Ruta para la página de Perfil de usuario
-@app.route('/perfil')
-def perfil_usuario():
-    return render_template('perfil.html')
+# Ruta para la página de información del usuario
+@app.route('/info_usuario', methods=['GET', 'POST'])
+def info_usuario():
+    if 'username' not in session:
+        flash("Debes iniciar sesión para acceder a esta página.")
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(username=session['username']).first()
+    if not user:
+        flash("Usuario no encontrado.")
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        # Recoger datos del formulario enviado
+        nombre = request.form.get('nombre')
+        apellidos = request.form.get('apellidos')
+        email = request.form.get('email')
+        telefono = request.form.get('telefono')
+        marca = request.form.get('marca')
+        modelo = request.form.get('modelo')
+        matricula = request.form.get('matricula')
+        tipo_vehiculo = request.form.get('tipo-vehiculo')
+        nueva_contrasena = request.form.get('nueva-contrasena')
+        confirmar_contrasena = request.form.get('confirmar-contrasena')
+
+        # Validar y actualizar contraseña
+        if nueva_contrasena and nueva_contrasena == confirmar_contrasena:
+            user.password = generate_password_hash(nueva_contrasena)
+            db.session.commit()
+            flash("Contraseña actualizada correctamente.")
+        elif nueva_contrasena or confirmar_contrasena:
+            flash("Las contraseñas no coinciden o están vacías.")
+
+        # Guardar otros cambios (si es necesario)
+        # Aquí puedes procesar la lógica para guardar más datos en la base de datos
+
+        flash("Los cambios han sido guardados.")
+
+    # Pasar los datos del usuario actual a la plantilla
+    context = {
+        "username": user.username,
+        # Añadir aquí información adicional que quieras mostrar en la plantilla
+    }
+    return render_template('Info_Usuario.html', **context)
+
+
+# Ruta para borrar usuario
+@app.route('/borrar_usuario', methods=['POST'])
+def borrar_usuario():
+    if 'username' not in session:
+        flash("Debes iniciar sesión para realizar esta acción.")
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(username=session['username']).first()
+    if not user:
+        flash("Usuario no encontrado.")
+        return redirect(url_for('info_usuario'))
+
+    db.session.delete(user)
+    db.session.commit()
+    session.pop('username', None)
+    flash("Tu cuenta ha sido eliminada correctamente.")
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     with app.app_context():

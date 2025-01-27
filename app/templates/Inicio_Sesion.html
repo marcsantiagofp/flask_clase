@@ -12,22 +12,30 @@
             
             <!-- Caja del formulario de login -->
             <div class="login-box bg-light p-4 rounded shadow-sm">
+                <!-- Logo centrado -->
                 <div class="login-logo text-center mb-4">
                     <a href="{{ url_for('index') }}">
                         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo SmartParking" class="img-fluid" style="height: 65px;">
                     </a>
                 </div>
+
                 <!-- Formulario de login -->
                 <form method="POST" action="{{ url_for('login') }}" class="login-form">
-                    {{ form.hidden_tag() }}  <!-- Para manejar CSRF Token si usas Flask-WTF -->
+                    {{ form.hidden_tag() }} <!-- Manejo de CSRF Token si usas Flask-WTF -->
+                    
+                    <!-- Campo de usuario -->
                     <div class="mb-3">
                         <label for="username" class="form-label">USUARIO</label>
                         {{ form.username(class="form-control", placeholder="Usuario", required=True) }}
                     </div>
+                    
+                    <!-- Campo de contraseña -->
                     <div class="mb-3">
                         <label for="password" class="form-label">CONTRASEÑA</label>
                         {{ form.password(class="form-control", placeholder="Contraseña", required=True) }}
                     </div>
+                    
+                    <!-- Botones -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn primary-btn w-100 py-2">LOG IN</button>
                         <a href="{{ url_for('register') }}" class="btn secondary-btn w-100 py-2">SIGN UP</a>
