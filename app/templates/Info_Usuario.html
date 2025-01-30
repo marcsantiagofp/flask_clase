@@ -5,120 +5,122 @@
 {% endblock %}
 
 {% block content %}
-    <main>
-        <!-- Contenedor Principal -->
-        <div class="container-usuario py-5">
-            <div class="container mt-4">
-                <div class="row">
-                    <!-- Columna izquierda (Información de usuario y vehículo) -->
-                    <div class="col-md-8">
-                        <!-- Información del Usuario -->
-                        <div class="info-usuario mb-4">
-                            <h2 class="mb-3">BIENVENIDO, USUARIO</h2>
+<main>
+    <!-- Contenedor Principal -->
+    <div class="container-usuario py-5">
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Columna izquierda (Información de usuario y vehículo) -->
+                <div class="col-md-8">
+                    <!-- Información del Usuario -->
+                    <div class="info-usuario mb-4">
+                        <h2 class="mb-3">BIENVENIDO, {{ user.username }}</h2>
+                    </div>
+
+                    <!-- Formulario de Información del Usuario -->
+                    <form method="POST">
+                        <div class="info-usuario-section mb-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="nombre" class="form-label">Nombre</label>
+                                    <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre" value="{{ user.username }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="apellidos" class="form-label">Apellidos</label>
+                                    <input type="text" id="apellidos" name="apellidos" class="form-control" placeholder="Apellidos" value="{{ user.apellido }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-usuario-section mb-3">
+                            <div class="col-12">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="{{ user.email }}">
+                            </div>
+                        </div>
+                        <div class="info-usuario-section mb-3">
+                            <div class="col-12">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="{{ user.telefono }}">
+                            </div>
                         </div>
 
-                        <!-- Formulario de Información del Usuario -->
-                        <form>
+                        <!-- Botón de acción -->
+                        <div class="d-flex gap-3 mb-4">
+                            <button class="btn primary-btn" type="submit" name="seccion" value="usuario">GUARDAR CAMBIOS</button>
+                        </div>
+                    </form>
+
+                    <!-- Información del Vehículo -->
+                    <div class="info-usuario mb-4">
+                        <h2 class="mb-3">Vehículo</h2>
+                        <form method="POST">
                             <div class="info-usuario-section mb-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="nombre" class="form-label">Nombre</label>
-                                        <input type="text" id="nombre" class="form-control" placeholder="Nombre">
+                                        <label for="marca" class="form-label">Marca</label>
+                                        <input type="text" id="marca" name="marca" class="form-control" placeholder="Marca" value="{{ user.marca }}">
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="apellidos" class="form-label">Apellidos</label>
-                                        <input type="text" id="apellidos" class="form-control" placeholder="Apellidos">
+                                        <label for="modelo" class="form-label">Modelo</label>
+                                        <input type="text" id="modelo" name="modelo" class="form-control" placeholder="Modelo" value="{{ user.modelo }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="info-usuario-section mb-3">
                                 <div class="col-12">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" class="form-control" placeholder="Email">
+                                    <label for="matricula" class="form-label">Matrícula</label>
+                                    <input type="text" id="matricula" name="matricula" class="form-control" placeholder="Matrícula" value="{{ user.matricula }}">
                                 </div>
                             </div>
                             <div class="info-usuario-section mb-3">
                                 <div class="col-12">
-                                    <label for="telefono" class="form-label">Teléfono</label>
-                                    <input type="text" id="telefono" class="form-control" placeholder="Teléfono">
+                                    <label for="tipo" class="form-label">Tipo</label>
+                                    <input type="text" id="tipo" name="tipo" class="form-control" placeholder="Tipo" value="{{ user.tipo }}">
                                 </div>
+                            </div>
+
+                            <!-- Botón de acción -->
+                            <div class="d-flex gap-3 mb-2">
+                                <button class="btn primary-btn" type="submit" name="seccion" value="vehiculo">GUARDAR CAMBIOS</button>
                             </div>
                         </form>
-
-                        <!-- Información del Vehículo -->
-                        <div class="info-usuario mb-4">
-                            <h2 class="mb-3">Vehículo</h2>
-                            <form>
-                                <div class="info-usuario-section mb-3">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label for="marca" class="form-label">Marca</label>
-                                            <input type="text" id="marca" class="form-control" placeholder="Marca">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="modelo" class="form-label">Modelo</label>
-                                            <input type="text" id="modelo" class="form-control" placeholder="Modelo">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-usuario-section mb-3">
-                                    <div class="col-12">
-                                        <label for="matricula" class="form-label">Matrícula</label>
-                                        <input type="text" id="matricula" class="form-control" placeholder="Matrícula">
-                                    </div>
-                                </div>
-                                <div class="info-usuario-section mb-3">
-                                    <div class="col-12">
-                                        <label for="tipo-vehiculo" class="form-label">Tipo de Vehículo</label>
-                                        <select id="tipo-vehiculo" class="form-select">
-                                            <option value="">Coche</option>
-                                            <option value="">Moto</option>
-                                            <option value="">Bicicleta</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Cambio de Contraseña -->
-                        <div class="info-usuario mb-4">
-                            <h2 class="mb-3">Cambiar Contraseña</h2>
-                            <form>
-                                <div class="info-usuario-section mb-3">
-                                    <label for="nueva-contrasena" class="form-label">Nueva Contraseña</label>
-                                    <input type="password" id="nueva-contrasena" class="form-control" placeholder="Contraseña">
-                                </div>
-                                <div class="info-usuario-section mb-3">
-                                    <label for="confirmar-contrasena" class="form-label">Confirmar Contraseña</label>
-                                    <input type="password" id="confirmar-contrasena" class="form-control" placeholder="Contraseña">
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Botones de acción -->
-                        <div class="d-flex gap-3">
-                            <button class="btn primary-btn">GUARDAR CAMBIOS</button>
-                            <button class="btn secondary-btn">BORRAR USUARIO</button>
-                        </div>
                     </div>
 
-                    <!-- Columna derecha (Íconos de perfil y coche) -->
-                    <div class="col-md-4 d-flex justify-content-center align-items-center position-relative">
-                        <!-- Icono de Usuario -->
-                        <div class="icon user-icon d-flex justify-content-center align-items-center rounded-circle mb-4">
-                            <img src="{{ url_for('static', filename='images/icon-user.png') }}" alt="Usuario" class="img-fluid" style="width: 60%;">
-                        </div>
-                        <!-- Icono de Vehículo -->
-                        <div class="icon car-icon d-flex justify-content-center align-items-center rounded-circle">
-                            <img src="{{ url_for('static', filename='images/icon-car.png') }}" alt="Vehículo" class="img-fluid" style="width: 60%;">
-                        </div>
-                        <!-- Botón de Cerrar Sesión -->
-                        <a class="btn primary-btn position-absolute" href="{{ url_for('logout') }}" style="top: 0; right: 0;">CERRAR SESIÓN</a>
+                    <!-- Cambio de Contraseña -->
+                    <div class="info-usuario mb-4">
+                        <h2 class="mb-3">Cambiar Contraseña</h2>
+                        <form method="POST">
+                            <div class="info-usuario-section mb-3">
+                                <label for="nueva-contrasena" class="form-label">Nueva Contraseña</label>
+                                <input type="password" id="nueva-contrasena" name="nueva-contrasena" class="form-control" placeholder="Contraseña">
+                            </div>
+                            <div class="info-usuario-section mb-3">
+                                <label for="confirmar-contrasena" class="form-label">Confirmar Contraseña</label>
+                                <input type="password" id="confirmar-contrasena" name="confirmar-contrasena" class="form-control" placeholder="Contraseña">
+                            </div>
+
+                            <!-- Botón de acción -->
+                            <div class="d-flex gap-3">
+                                <button class="btn primary-btn" type="submit" name="seccion" value="contrasena">GUARDAR CAMBIOS</button>
+                            </div>
+                        </form>
                     </div>
+                </div>
+
+                <!-- Columna derecha (Íconos de perfil y coche) -->
+                <div class="col-md-4 d-flex justify-content-center align-items-center position-relative">
+                    <div class="icon user-icon d-flex justify-content-center align-items-center rounded-circle mb-4">
+                        <img src="{{ url_for('static', filename='images/icon-user.png') }}" alt="Usuario" class="img-fluid" style="width: 60%;">
+                    </div>
+                    <div class="icon car-icon d-flex justify-content-center align-items-center rounded-circle">
+                        <img src="{{ url_for('static', filename='images/icon-car.png') }}" alt="Vehículo" class="img-fluid" style="width: 60%;">
+                    </div>
+                    <a class="btn primary-btn position-absolute" href="{{ url_for('logout') }}" style="top: 0; right: 0;">CERRAR SESIÓN</a>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
     <!-- Footer -->
     <footer class="footer">

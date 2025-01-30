@@ -11,6 +11,9 @@ class LoginForm(FlaskForm):
 # Formulario de registro
 class RegisterForm(FlaskForm):
     username = StringField('Nom d\'usuari', validators=[DataRequired(), Length(min=4, max=100)])
+    apellido = StringField('Cognom', validators=[DataRequired(), Length(min=2, max=100)])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    telefono = StringField('Telèfon', validators=[DataRequired(), Length(min=9, max=20)])
     password = PasswordField('Contrasenya', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirma la contrasenya', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Registrar-se')

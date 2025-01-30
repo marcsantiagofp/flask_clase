@@ -14,11 +14,14 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
+    apellido = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    telefono = db.Column(db.String(20), nullable=True)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return f'<User {self.username}>'
 
 # Ruta para la página principal (inicio de sesión y registro)
 @app.route('/', methods=['GET', 'POST'])
@@ -77,24 +80,27 @@ def index():
 # Ruta para la página de registro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    register_form = RegisterForm()
+    form = RegisterForm()
+    
+    if form.validate_on_submit():
+        username = form.username.data
+        apellido = form.apellido.data
+        email = form.email.data
+        telefono = form.telefono.data
+        password = form.password.data
 
-    if register_form.validate_on_submit():
-        username_input = register_form.username.data
-        password_input = register_form.password.data
-
-        existing_user = User.query.filter_by(username=username_input).first()
+        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
         if existing_user:
-            flash("Ja existeix un usuari amb aquest nom.")
+            flash("Ja existeix un usuari amb aquest nom o email.")
         else:
-            hashed_password = generate_password_hash(password_input)
-            new_user = User(username=username_input, password=hashed_password)
+            hashed_password = generate_password_hash(password)
+            new_user = User(username=username, apellido=apellido, email=email, telefono=telefono, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
             flash("Usuari creat correctament! Ara pots iniciar sessió.")
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
 
-    return render_template('Registro.html', register_form=register_form)
+    return render_template('Registro.html', register_form=form)
 
 # Ruta para la página de login
 @app.route('/login', methods=['GET', 'POST'])
@@ -143,35 +149,56 @@ def info_usuario():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        # Recoger datos del formulario enviado
-        nombre = request.form.get('nombre')
-        apellidos = request.form.get('apellidos')
-        email = request.form.get('email')
-        telefono = request.form.get('telefono')
-        marca = request.form.get('marca')
-        modelo = request.form.get('modelo')
-        matricula = request.form.get('matricula')
-        tipo_vehiculo = request.form.get('tipo-vehiculo')
-        nueva_contrasena = request.form.get('nueva-contrasena')
-        confirmar_contrasena = request.form.get('confirmar-contrasena')
+        # Procesar los datos enviados según la sección
+        if request.form.get('seccion') == 'usuario':
+            nombre = request.form.get('nombre')
+            apellidos = request.form.get('apellidos')
+            email = request.form.get('email')
+            telefono = request.form.get('telefono')
+            
+            if nombre:
+                user.username = nombre
+            if apellidos:
+                user.apellido = apellidos
+            if email:
+                user.email = email
+            if telefono:
+                user.telefono = telefono
 
-        # Validar y actualizar contraseña
-        if nueva_contrasena and nueva_contrasena == confirmar_contrasena:
-            user.password = generate_password_hash(nueva_contrasena)
             db.session.commit()
-            flash("Contraseña actualizada correctamente.")
-        elif nueva_contrasena or confirmar_contrasena:
-            flash("Las contraseñas no coinciden o están vacías.")
+            flash("Información del usuario actualizada correctamente.")
 
-        # Guardar otros cambios (si es necesario)
-        # Aquí puedes procesar la lógica para guardar más datos en la base de datos
+        elif request.form.get('seccion') == 'vehiculo':
+            marca = request.form.get('marca')
+            modelo = request.form.get('modelo')
+            matricula = request.form.get('matricula')
+            tipo = request.form.get('tipo')
+            
+            if marca:
+                user.marca = marca
+            if modelo:
+                user.modelo = modelo
+            if matricula:
+                user.matricula = matricula
+            if tipo:
+                user.tipo = tipo
 
-        flash("Los cambios han sido guardados.")
+            db.session.commit()
+            flash("Información del vehículo actualizada correctamente.")
 
-    # Pasar los datos del usuario actual a la plantilla
+        elif request.form.get('seccion') == 'contrasena':
+            nueva_contrasena = request.form.get('nueva-contrasena')
+            confirmar_contrasena = request.form.get('confirmar-contrasena')
+
+            if nueva_contrasena and nueva_contrasena == confirmar_contrasena:
+                user.password = generate_password_hash(nueva_contrasena)
+                db.session.commit()
+                flash("Contraseña actualizada correctamente.")
+            else:
+                flash("Las contraseñas no coinciden.")
+
     context = {
-        "username": user.username,
-        # Añadir aquí información adicional que quieras mostrar en la plantilla
+        "user": user
     }
     return render_template('Info_Usuario.html', **context)
 

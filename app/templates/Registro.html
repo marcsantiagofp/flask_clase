@@ -19,39 +19,78 @@
                 </div>
                 <!-- Formulario de registro -->
                 <form method="POST" action="{{ url_for('register') }}" class="register-form">
+                    {{ register_form.hidden_tag() }}
+
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nombre" class="form-label">NOMBRE</label>
-                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre" required>
+                                {{ register_form.username.label(class="form-label") }}
+                                {{ register_form.username(class="form-control", placeholder="Nombre de usuario") }}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="apellidos" class="form-label">APELLIDOS</label>
-                                <input type="text" id="apellidos" name="apellidos" class="form-control" placeholder="Apellidos" required>
+                                {{ register_form.apellido.label(class="form-label") }}
+                                {{ register_form.apellido(class="form-control", placeholder="Apellidos") }}
                             </div>
                         </div>
                     </div>
+
                     <div class="mb-3">
-                        <label for="email" class="form-label">EMAIL</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+                        {{ register_form.email.label(class="form-label") }}
+                        {{ register_form.email(class="form-control", placeholder="Email") }}
                     </div>
+
                     <div class="mb-3">
-                        <label for="telefono" class="form-label">TELÉFONO</label>
-                        <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required>
+                        {{ register_form.telefono.label(class="form-label") }}
+                        {{ register_form.telefono(class="form-control", placeholder="Teléfono") }}
                     </div>
+
                     <div class="mb-3">
-                        <label for="password" class="form-label">CONTRASEÑA</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required>
+                        {{ register_form.password.label(class="form-label") }}
+                        {{ register_form.password(class="form-control", placeholder="Contraseña", id="password") }}
                     </div>
+
                     <div class="mb-3">
-                        <label for="repeat-password" class="form-label">REPETIR CONTRASEÑA</label>
-                        <input type="password" id="repeat-password" name="repeat_password" class="form-control" placeholder="Repetir contraseña" required>
+                        {{ register_form.confirm_password.label(class="form-label") }}
+                        {{ register_form.confirm_password(class="form-control", placeholder="Repetir contraseña", id="repeat-password") }}
                     </div>
+
+                    <div id="password-error" class="text-danger" style="display: none;">
+                        Las contraseñas no coinciden.
+                    </div>
+
                     <button type="submit" class="btn primary-btn w-100 py-2">SIGN UP</button>
                 </form>
             </div>
         </section>
     </main>
+
+    <!-- Script para validación de contraseñas -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.querySelector(".register-form");
+            const password = document.getElementById("password");
+            const repeatPassword = document.getElementById("repeat-password");
+            const errorDiv = document.getElementById("password-error");
+
+            function checkPasswords() {
+                if (password.value !== repeatPassword.value) {
+                    errorDiv.style.display = "block"; // Mostrar mensaje de error
+                } else {
+                    errorDiv.style.display = "none"; // Ocultar mensaje de error
+                }
+            }
+
+            repeatPassword.addEventListener("input", checkPasswords);
+            password.addEventListener("input", checkPasswords);
+
+            form.addEventListener("submit", function(event) {
+                if (password.value !== repeatPassword.value) {
+                    event.preventDefault(); // Evita que el formulario se envíe
+                    errorDiv.style.display = "block";
+                }
+            });
+        });
+    </script>
 {% endblock %}
