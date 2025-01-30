@@ -20,8 +20,19 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+    # Relación con Vehiculo
+    vehiculo = db.relationship('Vehiculo', backref='owner', lazy=True, uselist=False)
+
     def __repr__(self):
         return f'<User {self.username}>'
+
+class Vehiculo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    marca = db.Column(db.String(120), nullable=True)
+    modelo = db.Column(db.String(120), nullable=True)
+    matricula = db.Column(db.String(120), nullable=True)
+    tipo = db.Column(db.String(120), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # Ruta para la página principal (inicio de sesión y registro)
 @app.route('/', methods=['GET', 'POST'])
@@ -29,7 +40,6 @@ def index():
     if 'user_ip' not in session:
         user_ip_information = request.remote_addr
         session["user_ip"] = user_ip_information
-        # flash("Sessió iniciada. El teu IP s'ha registrat.")
         return redirect('/')
     
     user_ip = session.get("user_ip")
@@ -111,8 +121,6 @@ def login():
         username = form.username.data
         password = form.password.data
 
-        # Aquí debería ir tu lógica de validación para verificar si el usuario existe
-        # y si la contraseña es correcta
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['username'] = username
@@ -126,7 +134,6 @@ def login():
 # Cerrar session
 @app.route('/logout')
 def logout():
-    # Eliminar 'username' de la sesión para cerrar la sesión
     session.pop('username', None)
     flash("Has cerrado sesión correctamente.")
     return redirect(url_for('index'))  # Redirige a la página de inicio
@@ -174,17 +181,33 @@ def info_usuario():
             matricula = request.form.get('matricula')
             tipo = request.form.get('tipo')
             
-            if marca:
-                user.marca = marca
-            if modelo:
-                user.modelo = modelo
-            if matricula:
-                user.matricula = matricula
-            if tipo:
-                user.tipo = tipo
+            # Verificar si hay un vehículo asociado al usuario
+            if marca or modelo or matricula or tipo:
+                if not user.vehiculo:
+                    # Insertar un nuevo vehículo si no existe
+                    vehiculo = Vehiculo(
+                        marca=marca,
+                        modelo=modelo,
+                        matricula=matricula,
+                        tipo=tipo,
+                        user_id=user.id
+                    )
+                    db.session.add(vehiculo)
+                    flash("Información del vehículo guardada correctamente.")
+                else:
+                    # Si ya existe un vehículo, actualiza los datos
+                    vehiculo = user.vehiculo
+                    if marca:
+                        vehiculo.marca = marca
+                    if modelo:
+                        vehiculo.modelo = modelo
+                    if matricula:
+                        vehiculo.matricula = matricula
+                    if tipo:
+                        vehiculo.tipo = tipo
+                    flash("Información del vehículo actualizada correctamente.")
 
             db.session.commit()
-            flash("Información del vehículo actualizada correctamente.")
 
         elif request.form.get('seccion') == 'contrasena':
             nueva_contrasena = request.form.get('nueva-contrasena')
@@ -201,7 +224,6 @@ def info_usuario():
         "user": user
     }
     return render_template('Info_Usuario.html', **context)
-
 
 # Ruta para borrar usuario
 @app.route('/borrar_usuario', methods=['POST'])
