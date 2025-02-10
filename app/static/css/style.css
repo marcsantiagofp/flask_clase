@@ -344,3 +344,129 @@ footer {
   margin-top: 10px;
   font-size: 0.8rem;
 }
+
+/* PÁGINA PARKING */
+.parking-slot {
+  width: 60px;
+  height: 60px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px; /* Tamaño del número */
+  font-weight: bold;
+  color: white;
+}
+
+.free { background-color: #4caf50; }
+.occupied { background-color: #e74c3c; }
+
+/* Aseguramos que el color azul se aplique a la plaza reservada */
+.parking-slot.reserved-user {
+  background-color: #3578e5 !important;  /* Forzamos el color azul */
+}
+
+/* Estilos para el layout del parking */
+.parking-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #a4a4a4;
+  padding: 40px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  width: 120%;
+  overflow-x: auto;
+  margin-right: 40px; /* Aumenta el margen derecho para separarlo de la columna de la info/formulario */
+}
+
+.parking-row {
+  display: flex;
+  justify-content: flex-start; /* Alinea las plazas a la izquierda */
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.parking-center {
+  width: 100%;
+  height: 120px; /* Aumenta la altura para dar más espacio */
+  background-color: #a4a4a4;
+}
+
+/* Estilos para la leyenda de colores */
+.legend {
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.legend-box {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  border: 1px solid #000;
+}
+
+/* Estilos para la sección de información/formulario */
+.parking-info {
+  text-align: left;
+  margin-left: 120px; /* Mantén el margen izquierdo para la separación */
+  margin-top: 0; /* Elimina el margen superior si no lo necesitas */
+}
+
+.parking-info h5 {
+  font-size: 1.2rem;
+  color: #155c8f;
+  margin-bottom: 10px;
+}
+
+.status {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.free-text { color: #155c8f; }
+.occupied-text { color: #dc3545; }
+.reserved-text { color: #0d6efd; }
+
+.reserva-box {
+  background-color: #eaf3f6;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.reserva-form {
+  width: 100%;
+}
+
+.reserva-form .form-group {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.reserva-form label {
+  font-weight: bold;
+  color: #155c8f;
+  display: block;
+}
+
+.reserva-form input, .reserva-form select {
+  padding: 10px;
+  border: 1px solid #d3e2f1;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #155c8f;
+  width: 100%;
+}
+
+.reserva-form input::placeholder {
+  color: #155c8f;
+}

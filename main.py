@@ -141,7 +141,18 @@ def logout():
 # Ruta para la página de Parkings
 @app.route('/parkings')
 def parkings():
-    return render_template('parkings.html')
+    if 'username' not in session:
+        flash("Debes iniciar sesión para acceder a esta página.")
+        return redirect(url_for('login'))  # Redirigir al login si no está autenticado
+    
+    # Obtener el nombre de usuario desde la sesión
+    username = session.get('username')
+
+    # Si estás usando un objeto 'user' basado en el nombre de usuario, puedes buscarlo en la base de datos
+    user = User.query.filter_by(username=username).first()  # Ajusta según el nombre de tu modelo
+
+    return render_template('Parking.html', user=user)
+
 
 # Ruta para la página de información del usuario
 @app.route('/info_usuario', methods=['GET', 'POST'])
