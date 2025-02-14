@@ -157,7 +157,6 @@ def parkings():
         flash("Debes iniciar sesión para acceder a esta página.")
         return redirect(url_for('login'))  
 
-    # Obtenemos el usuario actual de la sesión
     user = User.query.filter_by(username=session['username']).first()
     if not user:
         flash("Usuario no encontrado.")
@@ -167,27 +166,24 @@ def parkings():
     parkings = Parking.query.all()
     parking_data = {}
 
-    # Recorrer todos los parkings
     for parking in parkings:
         parking_data[parking.id] = {
             "title": f"Mapa del {parking.nombre}",
             "infoTitle": parking.nombre,
-            "free": 0,  # Contar las plazas libres
-            "occupied": 0,  # Contar las plazas ocupadas
-            "reserved": 0,  # Contar las plazas reservadas
-            "slots": []  # Guardar la información de cada plaza
+            "free": 0,
+            "occupied": 0,
+            "reserved": 0,
+            "slots": []
         }
 
-        # Obtener las plazas de cada parking
         plazas = Plaza.query.filter_by(parking_id=parking.id).all()
         
         for plaza in plazas:
             plaza_data = {
                 "id": plaza.id,
-                "status": plaza.estado,  # Estado de la plaza (libre, ocupada, reservada)
+                "status": plaza.estado
             }
 
-            # Contamos las plazas según su estado
             if plaza.estado == 'libre':
                 parking_data[parking.id]["free"] += 1
             elif plaza.estado == 'ocupada':
@@ -195,23 +191,28 @@ def parkings():
             elif plaza.estado == 'reservada':
                 parking_data[parking.id]["reserved"] += 1
 
-            # Añadimos la plaza al listado de slots
             parking_data[parking.id]["slots"].append(plaza_data)
 
+    # 🛠️ Depuración: Imprimir los datos recogidos en la terminal
+    print("🚗 Datos de parkings y plazas:", parking_data)
+
     if request.method == 'POST':
-        # Verificar si el usuario ha hecho una reserva
         plaza_id = request.form.get('plaza_id')
+        print("📍 ID de plaza seleccionada:", plaza_id)
+
         plaza = Plaza.query.filter_by(id=plaza_id).first()
+        print("ℹ️ Plaza encontrada en BD:", plaza)
 
         if plaza and plaza.estado == 'libre':
             plaza.estado = 'reservada'
-            plaza.user_id = user.id  # Asignar al usuario que hace la reserva
+            plaza.user_id = user.id  
             db.session.commit()
             flash("Plaza reservada correctamente.")
+            print(f"✅ Plaza {plaza_id} reservada para el usuario {user.username}")
         else:
             flash("La plaza no está disponible para la reserva.")
+            print("❌ La plaza no estaba disponible.")
 
-    # Pasamos la información del usuario y de los parkings a la plantilla
     context = {
         'user': user,
         'parking_data': parking_data
