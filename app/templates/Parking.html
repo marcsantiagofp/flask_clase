@@ -38,9 +38,9 @@
             <div class="col-md-6">
                 <div class="parking-info">
                     <h5 class="fw-bold" id="parkingInfoTitle">PARKING 1</h5>
-                    <p class="status free-text">PLAZAS DISPONIBLES: <span id="freeSpots">5</span></p>
-                    <p class="status occupied-text">PLAZAS OCUPADAS: <span id="occupiedSpots">9</span></p>
-                    <p class="status reserved-text">PLAZAS RESERVADAS: <span id="reservedSpots">3</span></p>
+                    <p class="status free-text">PLAZAS DISPONIBLES: <span id="freeSpots"></span></p>
+                    <p class="status occupied-text">PLAZAS OCUPADAS: <span id="occupiedSpots"></span></p>
+                    <p class="status reserved-text">PLAZAS RESERVADAS: <span id="reservedSpots"></span></p>
 
                     <h5 class="fw-bold mt-4">RESERVAR PLAZA PARKING</h5>
                     <form class="reserva-form">
@@ -53,6 +53,13 @@
                             <label for="plaza">Selecciona una plaza</label>
                             <select id="plaza" class="form-select">
                                 <option selected>Selecciona una plaza libre en el mapa</option>
+                                {% for parking_id, parking in parking_data.items() %}
+                                    {% for plaza in parking.slots %}
+                                        {% if plaza.status == 'free' %}
+                                            <option value="{{ plaza.id }}">Plaza {{ plaza.id }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
                             </select>
                         </div>
                         <button type="submit" class="btn primary-btn">RESERVAR</button>

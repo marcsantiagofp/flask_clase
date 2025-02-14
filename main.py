@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/flask_a
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Definición de la clase User para la base de datos
+# Modelos
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
@@ -19,11 +19,9 @@ class User(db.Model):
     telefono = db.Column(db.String(20), nullable=True)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-
-    # Relación con Vehiculo
     vehiculo = db.relationship('Vehiculo', backref='owner', lazy=True, uselist=False)
 
-    def __repr__(self):
+def __repr__(self):
         return f'<User {self.username}>'
 
 class Vehiculo(db.Model):
@@ -33,6 +31,20 @@ class Vehiculo(db.Model):
     matricula = db.Column(db.String(120), nullable=True)
     tipo = db.Column(db.String(120), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Parking(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+
+class Plaza(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    estado = db.Column(db.String(20), nullable=False, default='libre')
+    parking_id = db.Column(db.Integer, db.ForeignKey('parking.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    
+    # Relación con el modelo User
+    user = db.relationship('User', backref=db.backref('plazas', lazy=True))
+
 
 # Ruta para la página principal (inicio de sesión y registro)
 @app.route('/', methods=['GET', 'POST'])
@@ -139,19 +151,74 @@ def logout():
     return redirect(url_for('index'))  # Redirige a la página de inicio
 
 # Ruta para la página de Parkings
-@app.route('/parkings')
+@app.route('/parkings', methods=['GET', 'POST'])
 def parkings():
     if 'username' not in session:
         flash("Debes iniciar sesión para acceder a esta página.")
-        return redirect(url_for('login'))  # Redirigir al login si no está autenticado
-    
-    # Obtener el nombre de usuario desde la sesión
-    username = session.get('username')
+        return redirect(url_for('login'))  
 
-    # Si estás usando un objeto 'user' basado en el nombre de usuario, puedes buscarlo en la base de datos
-    user = User.query.filter_by(username=username).first()  # Ajusta según el nombre de tu modelo
+    # Obtenemos el usuario actual de la sesión
+    user = User.query.filter_by(username=session['username']).first()
+    if not user:
+        flash("Usuario no encontrado.")
+        return redirect(url_for('login'))
 
-    return render_template('Parking.html', user=user)
+    # Obtener todos los parkings
+    parkings = Parking.query.all()
+    parking_data = {}
+
+    # Recorrer todos los parkings
+    for parking in parkings:
+        parking_data[parking.id] = {
+            "title": f"Mapa del {parking.nombre}",
+            "infoTitle": parking.nombre,
+            "free": 0,  # Contar las plazas libres
+            "occupied": 0,  # Contar las plazas ocupadas
+            "reserved": 0,  # Contar las plazas reservadas
+            "slots": []  # Guardar la información de cada plaza
+        }
+
+        # Obtener las plazas de cada parking
+        plazas = Plaza.query.filter_by(parking_id=parking.id).all()
+        
+        for plaza in plazas:
+            plaza_data = {
+                "id": plaza.id,
+                "status": plaza.estado,  # Estado de la plaza (libre, ocupada, reservada)
+            }
+
+            # Contamos las plazas según su estado
+            if plaza.estado == 'libre':
+                parking_data[parking.id]["free"] += 1
+            elif plaza.estado == 'ocupada':
+                parking_data[parking.id]["occupied"] += 1
+            elif plaza.estado == 'reservada':
+                parking_data[parking.id]["reserved"] += 1
+
+            # Añadimos la plaza al listado de slots
+            parking_data[parking.id]["slots"].append(plaza_data)
+
+    if request.method == 'POST':
+        # Verificar si el usuario ha hecho una reserva
+        plaza_id = request.form.get('plaza_id')
+        plaza = Plaza.query.filter_by(id=plaza_id).first()
+
+        if plaza and plaza.estado == 'libre':
+            plaza.estado = 'reservada'
+            plaza.user_id = user.id  # Asignar al usuario que hace la reserva
+            db.session.commit()
+            flash("Plaza reservada correctamente.")
+        else:
+            flash("La plaza no está disponible para la reserva.")
+
+    # Pasamos la información del usuario y de los parkings a la plantilla
+    context = {
+        'user': user,
+        'parking_data': parking_data
+    }
+
+    return render_template("Parking.html", **context)
+
 
 
 # Ruta para la página de información del usuario

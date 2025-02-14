@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-01-2025 a las 19:39:32
+-- Tiempo de generación: 13-02-2025 a las 20:02:56
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -24,13 +24,100 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `log`
+--
+
+CREATE TABLE `log` (
+  `id` int(11) NOT NULL,
+  `matricula` varchar(120) NOT NULL,
+  `descripcion` text NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `parking`
+--
+
+CREATE TABLE `parking` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `parking`
+--
+
+INSERT INTO `parking` (`id`, `nombre`) VALUES
+(1, 'Parking 1'),
+(2, 'Parking 2');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `plaza`
+--
+
+CREATE TABLE `plaza` (
+  `id` int(11) NOT NULL,
+  `parking_id` int(11) NOT NULL,
+  `numero` int(11) NOT NULL,
+  `estado` enum('libre','ocupada','reservada') DEFAULT 'libre',
+  `user_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `plaza`
+--
+
+INSERT INTO `plaza` (`id`, `parking_id`, `numero`, `estado`, `user_id`) VALUES
+(17, 1, 1, 'libre', NULL),
+(18, 1, 2, 'libre', NULL),
+(19, 1, 3, 'libre', NULL),
+(20, 1, 4, 'libre', NULL),
+(21, 1, 5, 'libre', NULL),
+(22, 1, 6, 'libre', NULL),
+(23, 1, 7, 'libre', NULL),
+(24, 1, 8, 'libre', NULL),
+(25, 1, 9, 'libre', NULL),
+(26, 1, 10, 'libre', NULL),
+(27, 1, 11, 'libre', NULL),
+(28, 1, 12, 'libre', NULL),
+(29, 1, 13, 'libre', NULL),
+(30, 1, 14, 'libre', NULL),
+(31, 1, 15, 'libre', NULL),
+(32, 1, 16, 'libre', NULL),
+(33, 2, 1, 'libre', NULL),
+(34, 2, 2, 'libre', NULL),
+(35, 2, 3, 'libre', NULL),
+(36, 2, 4, 'libre', NULL),
+(37, 2, 5, 'libre', NULL),
+(38, 2, 6, 'libre', NULL),
+(39, 2, 7, 'libre', NULL),
+(40, 2, 8, 'libre', NULL),
+(41, 2, 9, 'libre', NULL),
+(42, 2, 10, 'libre', NULL),
+(43, 2, 11, 'libre', NULL),
+(44, 2, 12, 'libre', NULL),
+(45, 2, 13, 'libre', NULL),
+(46, 2, 14, 'libre', NULL),
+(47, 2, 15, 'libre', NULL),
+(48, 2, 16, 'libre', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `user`
 --
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -38,13 +125,56 @@ CREATE TABLE `user` (
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `created_at`) VALUES
-(4, 'hola', 'scrypt:32768:8:1$qhQK6Htwe7rkCPNy$173a149081a24312b3f6f8317b7087391d9f91244812175eb14cd05658463eecb5c638d5c2715a42357ec677c470362f96118017e1285770a26c67a5dbee916a', '2025-01-13 15:59:34'),
-(5, 'marc', 'scrypt:32768:8:1$r73ELIU9IrJoybiE$caaa3644285f95f86a11227433718542ebed3401a1f2eac25b9e3db4dce076291fc2021de8b1115f0f06a7cda2a3ed6c717510669321e9240e01376045de572e', '2025-01-13 16:15:10');
+INSERT INTO `user` (`id`, `username`, `apellido`, `telefono`, `password`, `email`, `created_at`) VALUES
+(5, 'Marc', 'Santiago', '123456789', 'scrypt:32768:8:1$r73ELIU9IrJoybiE$caaa3644285f95f86a11227433718542ebed3401a1f2eac25b9e3db4dce076291fc2021de8b1115f0f06a7cda2a3ed6c717510669321e9240e01376045de572e', 'marc@gmail.com', '2025-01-13 16:15:10'),
+(6, 'Iago', 'Medina', '666666666', 'scrypt:32768:8:1$H5LRqqOUwQGnD3II$5b16126a428d6a9808bafb596f037236d5683a3d3a2a68c39c2dc2e50bb258d0f8cf846d9d198949a30794889f1e41f93e17b5416ef0057f2123d21f40e60f5e', 'iago@gmail.com', '2025-01-30 18:27:38');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vehiculo`
+--
+
+CREATE TABLE `vehiculo` (
+  `id` int(11) NOT NULL,
+  `marca` varchar(120) DEFAULT NULL,
+  `modelo` varchar(120) DEFAULT NULL,
+  `matricula` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipo` varchar(120) DEFAULT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `vehiculo`
+--
+
+INSERT INTO `vehiculo` (`id`, `marca`, `modelo`, `matricula`, `tipo`, `user_id`) VALUES
+(1, 'Seat', 'Leon', '1234 aaa', 'coche', 5);
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `log`
+--
+ALTER TABLE `log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `matricula` (`matricula`);
+
+--
+-- Indices de la tabla `parking`
+--
+ALTER TABLE `parking`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `plaza`
+--
+ALTER TABLE `plaza`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `parking_id` (`parking_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indices de la tabla `user`
@@ -54,14 +184,69 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `username` (`username`);
 
 --
+-- Indices de la tabla `vehiculo`
+--
+ALTER TABLE `vehiculo`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_matricula` (`matricula`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `log`
+--
+ALTER TABLE `log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `parking`
+--
+ALTER TABLE `parking`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `plaza`
+--
+ALTER TABLE `plaza`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `vehiculo`
+--
+ALTER TABLE `vehiculo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `log`
+--
+ALTER TABLE `log`
+  ADD CONSTRAINT `log_ibfk_1` FOREIGN KEY (`matricula`) REFERENCES `vehiculo` (`matricula`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `plaza`
+--
+ALTER TABLE `plaza`
+  ADD CONSTRAINT `plaza_ibfk_1` FOREIGN KEY (`parking_id`) REFERENCES `parking` (`id`),
+  ADD CONSTRAINT `plaza_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `vehiculo`
+--
+ALTER TABLE `vehiculo`
+  ADD CONSTRAINT `vehiculo_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
