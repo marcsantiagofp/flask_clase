@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-02-2025 a las 20:02:56
+-- Tiempo de generación: 17-02-2025 a las 16:13:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -30,8 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `log` (
   `id` int(11) NOT NULL,
   `matricula` varchar(120) NOT NULL,
-  `descripcion` text NOT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+  `fecha_entrada` datetime NOT NULL,
+  `fecha_salida` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -72,38 +72,38 @@ CREATE TABLE `plaza` (
 --
 
 INSERT INTO `plaza` (`id`, `parking_id`, `numero`, `estado`, `user_id`) VALUES
-(17, 1, 1, 'libre', NULL),
-(18, 1, 2, 'libre', NULL),
-(19, 1, 3, 'libre', NULL),
-(20, 1, 4, 'libre', NULL),
-(21, 1, 5, 'libre', NULL),
-(22, 1, 6, 'libre', NULL),
-(23, 1, 7, 'libre', NULL),
-(24, 1, 8, 'libre', NULL),
-(25, 1, 9, 'libre', NULL),
-(26, 1, 10, 'libre', NULL),
-(27, 1, 11, 'libre', NULL),
-(28, 1, 12, 'libre', NULL),
-(29, 1, 13, 'libre', NULL),
-(30, 1, 14, 'libre', NULL),
-(31, 1, 15, 'libre', NULL),
-(32, 1, 16, 'libre', NULL),
-(33, 2, 1, 'libre', NULL),
-(34, 2, 2, 'libre', NULL),
-(35, 2, 3, 'libre', NULL),
-(36, 2, 4, 'libre', NULL),
-(37, 2, 5, 'libre', NULL),
-(38, 2, 6, 'libre', NULL),
-(39, 2, 7, 'libre', NULL),
-(40, 2, 8, 'libre', NULL),
-(41, 2, 9, 'libre', NULL),
-(42, 2, 10, 'libre', NULL),
-(43, 2, 11, 'libre', NULL),
-(44, 2, 12, 'libre', NULL),
-(45, 2, 13, 'libre', NULL),
-(46, 2, 14, 'libre', NULL),
-(47, 2, 15, 'libre', NULL),
-(48, 2, 16, 'libre', NULL);
+(1, 1, 1, 'reservada', 5),
+(2, 1, 2, 'reservada', 5),
+(3, 1, 3, 'libre', NULL),
+(4, 1, 4, 'libre', NULL),
+(5, 1, 5, 'libre', NULL),
+(6, 1, 6, 'libre', NULL),
+(7, 1, 7, 'libre', NULL),
+(8, 1, 8, 'libre', NULL),
+(9, 1, 9, 'libre', NULL),
+(10, 1, 10, 'libre', NULL),
+(11, 1, 11, 'libre', NULL),
+(12, 1, 12, 'libre', NULL),
+(13, 1, 13, 'reservada', 5),
+(14, 1, 14, 'libre', NULL),
+(15, 1, 15, 'reservada', 5),
+(16, 1, 16, 'libre', NULL),
+(17, 2, 17, 'reservada', 5),
+(18, 2, 18, 'libre', NULL),
+(19, 2, 19, 'libre', NULL),
+(20, 2, 20, 'libre', NULL),
+(21, 2, 21, 'libre', NULL),
+(22, 2, 22, 'libre', NULL),
+(23, 2, 23, 'libre', NULL),
+(24, 2, 24, 'libre', NULL),
+(25, 2, 25, 'libre', NULL),
+(26, 2, 26, 'libre', NULL),
+(27, 2, 27, 'libre', NULL),
+(28, 2, 28, 'libre', NULL),
+(29, 2, 29, 'libre', NULL),
+(30, 2, 30, 'libre', NULL),
+(31, 2, 31, 'libre', NULL),
+(32, 2, 32, 'libre', NULL);
 
 -- --------------------------------------------------------
 
@@ -211,7 +211,7 @@ ALTER TABLE `parking`
 -- AUTO_INCREMENT de la tabla `plaza`
 --
 ALTER TABLE `plaza`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
