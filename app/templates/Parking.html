@@ -6,171 +6,98 @@
 
 {% block content %}
 <div class="container mt-2">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="legend d-flex justify-content-center mt-2 mb-4 ms-5">
-                <div class="legend-item d-flex align-items-center me-3">
-                    <div class="legend-box" style="background-color: #4caf50;"></div>
-                    <span>Plaza Libre</span>
-                </div>
-                <div class="legend-item d-flex align-items-center me-3">
-                    <div class="legend-box" style="background-color: #e74c3c;"></div>
-                    <span>Plaza Ocupada</span>
-                </div>
-                <div class="legend-item d-flex align-items-center">
-                    <div class="legend-box" style="background-color: #3578e5;"></div>
-                    <span>Plaza Reservada</span>
-                </div>
-            </div>
-
-            <h3 class="fw-bold text-black">Mapa del Parking 1</h3>
-            <div class="parking-layout bg-dark p-3" id="parkingMap1"></div>
+    <!-- Leyenda (solo una vez) -->
+    <div class="legend d-flex justify-content-center mt-2 mb-4" style="margin-right: 440px;">
+        <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-box" style="background-color: #4caf50;"></div>
+            <span>Plaza Libre</span>
         </div>
-        <div class="col-md-6">
-            <div class="parking-info text-black">
-                <h5 class="fw-bold text-black">PARKING 1</h5>
-                <p class="status free-text">PLAZAS DISPONIBLES: <span id="freeSpots1"></span></p>
-                <p class="status occupied-text">PLAZAS OCUPADAS: <span id="occupiedSpots1"></span></p>
-                <p class="status reserved-text">PLAZAS RESERVADAS: <span id="reservedSpots1"></span></p>
-                <h5 class="fw-bold mt-3">RESERVAR PLAZA PARKING</h5>
-                <form class="reserva-form" id="reservaForm1">
-                    <div class="form-group">
-                        <label for="plaza1">Selecciona una plaza</label>
-                        <select id="plaza1" class="form-select">
-                            <option selected>Selecciona una plaza libre en el mapa</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn primary-btn">RESERVAR</button>
-                </form>
-            </div>
+        <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-box" style="background-color: #e74c3c;"></div>
+            <span>Plaza Ocupada</span>
+        </div>
+        <div class="legend-item d-flex align-items-center">
+            <div class="legend-box" style="background-color: #3578e5;"></div>
+            <span>Plaza Reservada</span>
         </div>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <h3 class="fw-bold text-black">Mapa del Parking 2</h3>
-            <div class="parking-layout bg-dark p-3" id="parkingMap2"></div>
-        </div>
-        <div class="col-md-6">
-            <div class="parking-info text-black">
-                <h5 class="fw-bold text-black">PARKING 2</h5>
-                <p class="status free-text">PLAZAS DISPONIBLES: <span id="freeSpots2"></span></p>
-                <p class="status occupied-text">PLAZAS OCUPADAS: <span id="occupiedSpots2"></span></p>
-                <p class="status reserved-text">PLAZAS RESERVADAS: <span id="reservedSpots2"></span></p>
-                <h5 class="fw-bold mt-3">RESERVAR PLAZA PARKING</h5>
-                <form class="reserva-form" id="reservaForm2">
-                    <div class="form-group">
-                        <label for="plaza2">Selecciona una plaza</label>
-                        <select id="plaza2" class="form-select">
-                            <option selected>Selecciona una plaza libre en el mapa</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn primary-btn">RESERVAR</button>
-                </form>
+    <div class="row">
+        {% for parking_id, parking in parkings.items() %}
+            <div class="col-md-6">
+                <h3 class="fw-bold text-black">{{ parking['title'] }}</h3>
+                <div class="parking-layout bg-dark p-3 d-flex flex-column align-items-center" 
+                     id="parkingMap{{ parking_id }}" 
+                     data-slots='{{ parking["slots"] | tojson | safe }}'>
+                </div>
             </div>
-        </div>
+            <div class="col-md-6">
+                <div class="parking-info text-black">
+                    <h5 class="fw-bold text-black">{{ parking['infoTitle'] }}</h5>
+                    <p class="status free-text">PLAZAS DISPONIBLES: <span id="freeSpots{{ parking_id }}">{{ parking['free'] }}</span></p>
+                    <p class="status occupied-text">PLAZAS OCUPADAS: <span id="occupiedSpots{{ parking_id }}">{{ parking['occupied'] }}</span></p>
+                    <p class="status reserved-text">PLAZAS RESERVADAS: <span id="reservedSpots{{ parking_id }}">{{ parking['reserved'] }}</span></p>
+                    <h5 class="fw-bold mt-3">RESERVAR PLAZA PARKING</h5>
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" class="form-control" value="{{ user.username }}" readonly>
+                    </div>
+                    <form class="reserva-form" id="reservaForm{{ parking_id }}" method="POST">
+                        <div class="form-group">
+                            <label for="plaza{{ parking_id }}">Selecciona una plaza</label>
+                            <select id="plaza{{ parking_id }}" name="plaza_id" class="form-select">
+                                <option selected>Selecciona una plaza libre en el mapa</option>
+                                {% for slot in parking['slots'] %}
+                                    {% if slot['status'] == 'libre' %}
+                                        <option value="{{ slot['id'] }}">Plaza {{ slot['id'] }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn primary-btn mb-5">RESERVAR</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
-<style>
-    .parking-layout {
-        min-height: 0px;
-        border-radius: 10px;
-    }
-
-    .parking-slot.free {
-        background-color: #4caf50; /* Plaza Libre */
-        margin-top: 10px;
-        margin-bottom: -20px;
-    }
-
-    .parking-slot.occupied {
-        background-color: #e74c3c; /* Plaza Ocupada */
-    }
-
-    .parking-slot.reserved {
-        background-color: #3578e5; /* Plaza Reservada */
-    }
-</style>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const parkings = {
-            1: { free: 16, occupied: 0, reserved: 0, slots: Array.from({ length: 16 }, (_, i) => ({ id: i + 1, status: "free" })) },
-            2: { free: 16, occupied: 0, reserved: 0, slots: Array.from({ length: 16 }, (_, i) => ({ id: i + 1, status: "free" })) }
-        };
+        document.querySelectorAll("[id^='parkingMap']").forEach(parkingMap => {
+            const slots = JSON.parse(parkingMap.getAttribute("data-slots"));
 
-        function updateParking(parkingId) {
-            const parkingData = parkings[parkingId];
-            document.getElementById(`freeSpots${parkingId}`).textContent = parkingData.free;
-            document.getElementById(`occupiedSpots${parkingId}`).textContent = parkingData.occupied;
-            document.getElementById(`reservedSpots${parkingId}`).textContent = parkingData.reserved;
+            const row1 = document.createElement("div");
+            row1.classList.add("parking-row");
 
-            const parkingMap = document.getElementById(`parkingMap${parkingId}`);
-            const plazaSelect = document.getElementById(`plaza${parkingId}`);
-            parkingMap.innerHTML = "";
-            plazaSelect.innerHTML = '<option selected>Selecciona una plaza libre en el mapa</option>';
+            const row2 = document.createElement("div");
+            row2.classList.add("parking-row");
 
-            let row = document.createElement("div");
-            row.classList.add("parking-row");
+            slots.forEach((slot, index) => {
+                const slotDiv = document.createElement("div");
+                slotDiv.classList.add("parking-slot");
 
-            parkingData.slots.forEach((slot, index) => {
-                let slotDiv = document.createElement("div");
-                slotDiv.classList.add("parking-slot", slot.status);
-
-                if (slot.status === "reserved") {
-                    slotDiv.style.backgroundColor = "#3578e5"; // Cambiar a azul cuando se reserve
+                if (slot['status'] === 'libre') {
+                    slotDiv.style.backgroundColor = "#4caf50";
+                } else if (slot['status'] === 'ocupada') {
+                    slotDiv.style.backgroundColor = "#e74c3c";
+                } else if (slot['status'] === 'reservada') {
+                    slotDiv.style.backgroundColor = "#3578e5";
                 }
 
-                slotDiv.textContent = slot.id;
-                row.appendChild(slotDiv);
+                slotDiv.textContent = slot['id'];
 
-                if (slot.status === "free") {
-                    let option = document.createElement("option");
-                    option.value = slot.id;
-                    option.textContent = `Plaza ${slot.id}`;
-                    plazaSelect.appendChild(option);
-                }
-
-                if ((index + 1) % 8 === 0) {
-                    parkingMap.appendChild(row);
-                    row = document.createElement("div");
-                    row.classList.add("parking-row");
+                if (index < 8) {
+                    row1.appendChild(slotDiv);
+                } else {
+                    row2.appendChild(slotDiv);
                 }
             });
-            parkingMap.appendChild(row);
-        }
 
-        document.getElementById("reservaForm1").addEventListener("submit", function (event) {
-            event.preventDefault();
-            const selectedPlaza = document.getElementById("plaza1").value;
-            if (selectedPlaza !== "Selecciona una plaza libre en el mapa") {
-                const slot = parkings[1].slots.find(slot => slot.id == selectedPlaza);
-                if (slot.status === "free") {
-                    slot.status = "reserved";
-                    parkings[1].free--;
-                    parkings[1].reserved++;
-                    updateParking(1);
-                }
-            }
+            parkingMap.appendChild(row1);
+            parkingMap.appendChild(row2);
         });
-
-        document.getElementById("reservaForm2").addEventListener("submit", function (event) {
-            event.preventDefault();
-            const selectedPlaza = document.getElementById("plaza2").value;
-            if (selectedPlaza !== "Selecciona una plaza libre en el mapa") {
-                const slot = parkings[2].slots.find(slot => slot.id == selectedPlaza);
-                if (slot.status === "free") {
-                    slot.status = "reserved";
-                    parkings[2].free--;
-                    parkings[2].reserved++;
-                    updateParking(2);
-                }
-            }
-        });
-
-        updateParking(1);
-        updateParking(2);
     });
 </script>
+
 {% endblock %}

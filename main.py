@@ -196,6 +196,7 @@ def parkings():
     # 🛠️ Depuración: Imprimir los datos recogidos en la terminal
     print("🚗 Datos de parkings y plazas:", parking_data)
 
+    # Procesar la reserva de plaza
     if request.method == 'POST':
         plaza_id = request.form.get('plaza_id')
         print("📍 ID de plaza seleccionada:", plaza_id)
@@ -205,21 +206,21 @@ def parkings():
 
         if plaza and plaza.estado == 'libre':
             plaza.estado = 'reservada'
-            plaza.user_id = user.id  
+            plaza.user_id = user.id  # Asociamos la plaza al usuario
             db.session.commit()
             flash("Plaza reservada correctamente.")
             print(f"✅ Plaza {plaza_id} reservada para el usuario {user.username}")
+            return redirect(url_for('parkings'))  # 🔄 Redirige para recargar la página
         else:
             flash("La plaza no está disponible para la reserva.")
             print("❌ La plaza no estaba disponible.")
 
+    # Pasar los datos a la plantilla
     context = {
         'user': user,
-        'parking_data': parking_data
+        'parkings': parking_data
     }
-
     return render_template("Parking.html", **context)
-
 
 
 # Ruta para la página de información del usuario
