@@ -1,13 +1,21 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-
-#pas5: Dins init.py, li hem de pasar la configuració de la app i importar la clase config
+from flask_sqlalchemy import SQLAlchemy
 from .config import Config
+
+# Importar base de datos
+db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
     bootstrap = Bootstrap(app)
-    
-    #pas5: Dins app.py, li hem de pasar la configuració de la app i importar la clase config
     app.config.from_object(Config)
+
+    # Inicializzar extensiones
+    db.init_app(app)
+
+    from app.forms import LoginForm, RegisterForm
+    from .routes import register_routes
+    register_routes(app)
+    
     return app
