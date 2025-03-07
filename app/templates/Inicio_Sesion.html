@@ -7,8 +7,7 @@
 {% block content %}
     <main>
         <!-- Contenedor de login con fondo de imagen -->
-        <section class="login-container d-flex align-items-center justify-content-center min-vh-100"
-            style="background-image: url('{{ url_for('static', filename='images/fondo-coches.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <section class="login-container d-flex align-items-center justify-content-center min-vh-100 slider2">
             
             <!-- Caja del formulario de login -->
             <div class="login-box bg-light p-4 rounded shadow-sm">
@@ -21,7 +20,7 @@
 
                 <!-- Formulario de login -->
                 <form method="POST" action="{{ url_for('login') }}" class="login-form">
-                    {{ form.hidden_tag() }} <!-- Manejo de CSRF Token si usas Flask-WTF -->
+                    {{ form.hidden_tag() }}
                     
                     <!-- Campo de usuario -->
                     <div class="mb-3">

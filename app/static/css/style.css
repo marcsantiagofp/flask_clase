@@ -17,7 +17,6 @@ html, body {
   background-color: #f8f9fa;
 }
 
-
 /* HEADER */
 header {
   display: flex;
@@ -47,7 +46,7 @@ header .nav-icons {
   display: flex;
   position: absolute;
   right: 20px;
-  gap: 30PX;
+  gap: 30px;
 }
 
 header .nav-icons img {
@@ -55,12 +54,10 @@ header .nav-icons img {
   cursor: pointer;
 }
 
-
 /* CONTENEDORES GENERALES */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
 }
 
 /* LOGIN Y REGISTRO */
@@ -69,7 +66,6 @@ header .nav-icons img {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
   min-height: 100vh;
 }
 
@@ -78,7 +74,6 @@ header .nav-icons img {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 40px 20px;
   background-color: #eaf3f6;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -90,7 +85,7 @@ header .nav-icons img {
 .login-logo, .register-logo {
   width: 100%;
   text-align: center;
-  margin-bottom: 20px;
+  padding-right: 30px;
 }
 
 .login-form, .register-form {
@@ -128,6 +123,8 @@ header .nav-icons img {
   color: #fff;
   font-weight: bold;
   border-radius: 20px;
+  padding: 10px;
+  font-size: 10px;
 }
 
 .primary-btn:hover {
@@ -141,6 +138,8 @@ header .nav-icons img {
   color: #1c1c1c;
   font-weight: bold;
   border-radius: 20px;
+  padding: 10px;
+  font-size: 10px;
 }
 
 .secondary-btn:hover {
@@ -155,29 +154,46 @@ header .nav-icons img {
   justify-content: center;
   align-items: center;
   text-align: center;
-  height: 50vh;
+  height: 100vh;
   color: #155c8f;
   padding: 20px;
+  background-image: url('../images/fondo-inicio.png');
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-blend-mode: darken; 
 }
 
 .slider-content {
-  background-color: #eaf3f6;
-  padding: 20px 30px;
+  padding: 30px 40px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffff;
 }
 
 .slider-content h1 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #1c1c1c;
+  color: #ffffff;
+  font-size: 50px;
 }
 
 .slider-content p {
-  font-size: 1rem;
   margin-bottom: 15px;
+  font-size: 15px;
 }
 
+/* Slider Login y Register */
+.slider2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #155c8f;
+  background-image: url('../images/fondo-coches.png');
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-blend-mode: darken;
+}
 
 /* INFO SECTION */
 .info {
@@ -221,9 +237,9 @@ header .nav-icons img {
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
-  padding: 5px;  /* Reducido el padding aún más */
+  padding: 5px;
   max-width: 1200px;
-  margin-top: 10px;  /* Menos espacio superior */
+  margin-top: 10px;
   font-family: Arial, sans-serif;
   color: #1c1c1c;
 }
@@ -232,9 +248,9 @@ header .nav-icons img {
 .info-usuario h2 {
   color: #155c8f;
   font-weight: bold;
-  margin-top: 5px;  /* Mucho menos espacio arriba */
-  margin-bottom: 5px;  /* Menos espacio debajo */
-  font-size: 1.1rem;  /* Reducimos un poco el tamaño de la fuente */
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
   text-align: left;
 }
 
@@ -243,32 +259,32 @@ header .nav-icons img {
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  margin-bottom: 0.5rem;  /* Menos espacio entre secciones */
+  margin-bottom: 0.5rem;
 }
 
 /* Sección de cada campo dentro del formulario */
 .info-usuario-section {
   width: 100%;
-  max-width: 400px;  /* Reducimos aún más el ancho máximo */
-  margin-bottom: 5px;  /* Separación más estrecha entre campos */
+  max-width: 400px;
+  margin-bottom: 5px;
 }
 
 .info-usuario-section label {
   display: block;
-  font-size: 0.8rem;  /* Fuente más pequeña */
+  font-size: 0.8rem;
   font-weight: bold;
-  margin-bottom: 3px;  /* Menos espacio debajo de las etiquetas */
+  margin-bottom: 3px;
   color: #155c8f;
 }
 
 .info-usuario-section input,
 .info-usuario-section select {
   width: 100%;
-  padding: 6px;  /* Menos padding */
-  font-size: 0.8rem;  /* Fuente más pequeña */
+  padding: 6px;
+  font-size: 0.8rem;
   border: 1px solid #eaf3f6;
   background-color: #eaf3f6;
-  margin-bottom: 6px;  /* Separación más estrecha entre los campos */
+  margin-bottom: 6px;
 }
 
 .info-usuario-section input::placeholder {
@@ -281,13 +297,13 @@ header .nav-icons img {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 30px;  /* Mayor separación entre los iconos */
-  margin-top: 20px;  /* Ajuste para mayor espacio arriba */
+  gap: 30px;
+  margin-top: 20px;
 }
 
 .icon {
-  width: 425px;  /* Aumentamos el tamaño de los iconos */
-  height: 300px;  /* Aumentamos el tamaño de los iconos */
+  width: 425px;
+  height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -301,15 +317,14 @@ header .nav-icons img {
 }
 
 .icon.user-icon {
-  top: 40px;  /* Ajustamos la posición para separarlos más */
-  left: -180px;  /* Alineación más alejada del centro */
+  top: 40px;
+  left: -180px;
 }
 
 .icon.car-icon {
-  bottom: 240px;  /* Ajustamos la posición para separarlos más */
-  right: -160px;  /* Alineación más alejada del centro */
+  bottom: 240px;
+  right: -160px;
 }
-
 
 /* FOOTER */
 footer {
@@ -354,7 +369,7 @@ footer {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 18px; /* Tamaño del número */
+  font-size: 18px;
   font-weight: bold;
   color: white;
 }
@@ -362,12 +377,10 @@ footer {
 .free { background-color: #4caf50; }
 .occupied { background-color: #e74c3c; }
 
-/* Aseguramos que el color azul se aplique a la plaza reservada */
 .parking-slot.reserved-user {
-  background-color: #3578e5 !important;  /* Forzamos el color azul */
+  background-color: #3578e5 !important;
 }
 
-/* Estilos para el layout del parking */
 .parking-layout {
   display: flex;
   flex-direction: column;
@@ -379,23 +392,22 @@ footer {
   margin-bottom: 40px;
   width: 120%;
   overflow-x: auto;
-  margin-right: 40px; /* Aumenta el margen derecho para separarlo de la columna de la info/formulario */
+  margin-right: 40px;
 }
 
 .parking-row {
   display: flex;
-  justify-content: flex-start; /* Alinea las plazas a la izquierda */
+  justify-content: flex-start;
   gap: 15px;
   margin-bottom: 20px;
 }
 
 .parking-center {
   width: 100%;
-  height: 120px; /* Aumenta la altura para dar más espacio */
+  height: 120px;
   background-color: #a4a4a4;
 }
 
-/* Estilos para la leyenda de colores */
 .legend {
   margin-top: 20px;
 }
@@ -412,11 +424,10 @@ footer {
   border: 1px solid #000;
 }
 
-/* Estilos para la sección de información/formulario */
 .parking-info {
   text-align: left;
-  margin-left: 120px; /* Mantén el margen izquierdo para la separación */
-  margin-top: 0; /* Elimina el margen superior si no lo necesitas */
+  margin-left: 120px;
+  margin-top: 0;
 }
 
 .parking-info h5 {

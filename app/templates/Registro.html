@@ -7,8 +7,7 @@
 {% block content %}
     <main>
         <!-- Contenedor de registro con fondo de imagen -->
-        <section class="register-container d-flex align-items-center justify-content-center min-vh-100"
-            style="background-image: url('{{ url_for('static', filename='images/fondo-coches.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <section class="register-container d-flex align-items-center justify-content-center min-vh-100 slider2">
             
             <!-- Caja del formulario de registro -->
             <div class="register-box bg-light p-4 rounded shadow-sm">
@@ -76,9 +75,9 @@
 
             function checkPasswords() {
                 if (password.value !== repeatPassword.value) {
-                    errorDiv.style.display = "block"; // Mostrar mensaje de error
+                    errorDiv.style.display = "block";
                 } else {
-                    errorDiv.style.display = "none"; // Ocultar mensaje de error
+                    errorDiv.style.display = "none";
                 }
             }
 
@@ -87,7 +86,7 @@
 
             form.addEventListener("submit", function(event) {
                 if (password.value !== repeatPassword.value) {
-                    event.preventDefault(); // Evita que el formulario se envíe
+                    event.preventDefault();
                     errorDiv.style.display = "block";
                 }
             });

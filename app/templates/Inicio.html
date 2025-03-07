@@ -6,13 +6,18 @@
 {% block content %}
     <main>
         <!-- Slider Section -->
-        <section class="slider position-relative text-center text-white" style="background-image: url('{{ url_for('static', filename='images/fondo-inicio.png') }}'); background-size: cover; background-position: center; height: 100vh;">
-            <div class="container d-flex flex-column justify-content-center align-items-center h-100">
+        <section class="slider">
+            <div class="container d-flex flex-column justify-content-center align-items-center h-100 slider-content">
                 <h1 class="display-4 fw-bold">ENCUENTRE SU PLAZA</h1>
                 <p class="lead">Consulta la disponibilidad de parkings en tiempo real.</p>
                 <div class="mt-4">
-                    <a class="btn primary-btn" href="{{ url_for('register') }}">SIGN UP</a>
-                    <a class="btn primary-btn" href="{{ url_for('login') }}">LOG IN</a>
+                    {% if username %}
+                        <a class="btn primary-btn" href="{{ url_for('parkings') }}">PARKINGS</a>
+                        <!-- <a class="btn primary-btn" href="{{ url_for('logout') }}">LOG OUT</a> -->
+                    {% else %}
+                        <a class="btn primary-btn" href="{{ url_for('register') }}">SIGN UP</a>
+                        <a class="btn primary-btn" href="{{ url_for('login') }}">LOG IN</a>
+                    {% endif %}
                 </div>
             </div>
         </section>
