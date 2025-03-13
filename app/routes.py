@@ -1,9 +1,10 @@
-from flask import Flask, request, make_response, redirect, render_template, session, flash, url_for, jsonify
+from flask import Flask, request, make_response, redirect, render_template, session, flash, url_for, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
 from .forms import LoginForm, RegisterForm
 from .models import User, Vehiculo, Log, Parking, Plaza
 from . import db
 from datetime import datetime
+import requests
 
 def register_routes(app):
     from app.models import User, db
@@ -286,6 +287,9 @@ def register_routes(app):
 
 
     # ESP 32
+
+    ESP32_URL = 'http://172.16.6.200/abrir_barrera'
+
     @app.route('/api/entrada', methods=['POST'])
     def entrada():
         data = request.get_json(force=True)
@@ -333,24 +337,52 @@ def register_routes(app):
 
     @app.route('/api/actualizaSpot', methods=['POST'])
     def actualizaSpot():
-        data = request.get_json(force=True)
-        plaza_id = data.get('plazaId')
-        estado = data.get('estado')
-        
-        plaza = Plaza.query.filter_by(id=plaza_id).first()
-        if not plaza:
-            return jsonify({'error': 'Plaza no encontrada'}), 404
-        
-        plaza.estado = estado
-        if estado == 'libre':
-            plaza.user_id = None
+        try:
+            data = request.get_json(force=True)
+            plaza_id = data.get('plazaId')
+            estado = data.get('estado')
 
-        db.session.commit()
-        return jsonify({
-            'message': 'Plaza actualizada',
-            'plazaId': plaza_id,
-            'estado': estado
-        }), 200
+            # Validar entrada
+            if not plaza_id or not estado:
+                return jsonify({'error': 'Faltan datos requeridos'}), 400
+            
+            if estado not in ['libre', 'ocupada', 'reservada']:
+                return jsonify({'error': 'Estado inválido'}), 400
+
+            plaza = Plaza.query.filter_by(id=plaza_id).first()
+            if not plaza:
+                return jsonify({'error': 'Plaza no encontrada'}), 404
+
+            # Actualizar estado y user_id si aplica
+            plaza.estado = estado
+            if estado == 'libre':
+                plaza.user_id = None  # Liberar la plaza
+
+            db.session.commit()
+
+            return jsonify({
+                'message': 'Plaza actualizada correctamente',
+                'plazaId': plaza_id,
+                'estado': estado
+            }), 200
+
+        except Exception as e:
+            return jsonify({'error': f'Error interno: {str(e)}'}), 500
+
+    
+    def abrir_barrera():
+        try:
+            response = requests.post(ESP32_URL, json={"accion": "abrir"}, timeout=5)
+            if response.status_code == 200:
+                print("Barrera abierta correctamente.")
+                return True
+            else:
+                print(f"Error al activar la barrera: Código {response.status_code}")
+                return False
+        except requests.RequestException as e:
+            print(f"Error al comunicarse con la ESP32: {e}")
+            return False
+    
     
 
 
