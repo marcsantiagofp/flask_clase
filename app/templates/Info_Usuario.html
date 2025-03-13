@@ -75,8 +75,11 @@
                             <div class="info-usuario-section mb-3">
                                 <div class="col-12">
                                     <label for="tipo" class="form-label">Tipo</label>
-                                    <input type="text" id="tipo" name="tipo" class="form-control" placeholder="Tipo" value="{{ user.vehiculo.tipo if user.vehiculo else '' }}">
-                                </div>
+                                    <select id="tipo" name="tipo" class="form-control">
+                                        <option value="Coche" {{ 'selected' if user.vehiculo and user.vehiculo.tipo == 'Coche' else '' }}>Coche</option>
+                                        <option value="Moto" {{ 'selected' if user.vehiculo and user.vehiculo.tipo == 'Moto' else '' }}>Moto</option>
+                                    </select>
+                                </div>                                
                             </div>
 
                             <!-- Botón de acción -->
