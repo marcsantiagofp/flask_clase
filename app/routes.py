@@ -89,9 +89,9 @@ def register_routes(app):
     # Ruta para la página de login
     @app.route('/login', methods=['GET', 'POST'])
     def login():
-        form = LoginForm()  # Crear el formulario aquí
+        form = LoginForm()
 
-        if form.validate_on_submit():  # Si el formulario es válido
+        if form.validate_on_submit():
             username = form.username.data
             password = form.password.data
 
@@ -99,18 +99,18 @@ def register_routes(app):
             if user and check_password_hash(user.password, password):
                 session['username'] = username
                 flash('Inicio de sesión exitoso!')
-                return redirect(url_for('index'))  # Redirigir a la página principal
+                return redirect(url_for('index'))
             else:
                 flash('Nombre de usuario o contraseña incorrectos.')
 
-        return render_template('Inicio_Sesion.html', form=form)  # Pasar el formulario a la plantilla
+        return render_template('Inicio_Sesion.html', form=form)
 
     # Cerrar session
     @app.route('/logout')
     def logout():
         session.pop('username', None)
         flash("Has cerrado sesión correctamente.")
-        return redirect(url_for('index'))  # Redirige a la página de inicio
+        return redirect(url_for('index'))
 
     # INFORMACION USUARIO
     @app.route('/info_usuario', methods=['GET', 'POST'])
@@ -257,7 +257,7 @@ def register_routes(app):
                 parking_data[parking.id]["slots"].append(plaza_data)
 
         # 🛠️ Depuración: Imprimir los datos recogidos en la terminal
-        print("🚗 Datos de parkings y plazas:", parking_data)
+        print("Datos de parkings y plazas:", parking_data)
 
         # Procesar la reserva de plaza
         if request.method == 'POST':
@@ -265,20 +265,19 @@ def register_routes(app):
             print("📍 ID de plaza seleccionada:", plaza_id)
 
             plaza = Plaza.query.filter_by(id=plaza_id).first()
-            print("ℹ️ Plaza encontrada en BD:", plaza)
+            print("Plaza encontrada en BD:", plaza)
 
             if plaza and plaza.estado == 'libre':
                 plaza.estado = 'reservada'
-                plaza.user_id = user.id  # Asociamos la plaza al usuario
+                plaza.user_id = user.id
                 db.session.commit()
                 flash("Plaza reservada correctamente.")
-                print(f"✅ Plaza {plaza_id} reservada para el usuario {user.username}")
-                return redirect(url_for('parkings'))  # 🔄 Redirige para recargar la página
+                print(f" Plaza {plaza_id} reservada para el usuario {user.username}")
+                return redirect(url_for('parkings'))
             else:
                 flash("La plaza no está disponible para la reserva.")
                 print("❌ La plaza no estaba disponible.")
 
-        # Pasar los datos a la plantilla
         context = {
             'user': user,
             'parkings': parking_data
@@ -291,26 +290,46 @@ def register_routes(app):
     def entrada():
         data = request.get_json(force=True)
         matricula = data.get('matricula')
-        
+
         vehiculo = Vehiculo.query.filter_by(matricula=matricula).first()
         if not vehiculo:
             return jsonify({'error': 'Matrícula no encontrada'}), 403
 
-        plazaLibre = Plaza.query.filter_by(estado='libre').first()
-        if plazaLibre:
-            nuevo_log = Log(matricula=matricula, fecha_entrada=datetime.now())
-            db.session.add(nuevo_log)
-            
-            plazaLibre.estado = 'ocupada'
-            plazaLibre.user_id = vehiculo.user_id
+        log = Log.query.filter_by(matricula=matricula, fecha_salida=None).first()
+        
+        if log:
+            # Procesar salida
+            log.fecha_salida = datetime.now()
+
+            plaza = Plaza.query.filter_by(user_id=vehiculo.user_id, estado='ocupada').first()
+            if plaza:
+                plaza.estado = 'libre'
+                plaza.user_id = None
+
             db.session.commit()
-            
             return jsonify({
-                "message": "Entrada registrada, Bienvenido",
-                "matricula": matricula
+                "message": "Salida registrada, hasta luego",
+                "matricula": matricula,
+                "hora_salida": log.fecha_salida.strftime('%Y-%m-%d %H:%M:%S')
             }), 200
         else:
-            return jsonify({'error': 'No hay plazas disponibles'}), 409
+            # Procesar entrada
+            plazaLibre = Plaza.query.filter_by(estado='libre').first()
+            if plazaLibre:
+                nuevo_log = Log(matricula=matricula, fecha_entrada=datetime.now())
+                db.session.add(nuevo_log)
+
+                plazaLibre.estado = 'ocupada'
+                plazaLibre.user_id = vehiculo.user_id
+
+                db.session.commit()
+
+                return jsonify({
+                    "message": "Entrada registrada, Bienvenido",
+                    "matricula": matricula
+                }), 200
+            else:
+                return jsonify({'error': 'No hay plazas disponibles'}), 409
 
     @app.route('/api/actualizaSpot', methods=['POST'])
     def actualizaSpot():
@@ -332,30 +351,6 @@ def register_routes(app):
             'plazaId': plaza_id,
             'estado': estado
         }), 200
+    
 
-    @app.route('/api/salida', methods=['POST'])
-    def salida():
-        data = request.get_json(force=True)
-        matricula = data.get('matricula')
-        
-        vehiculo = Vehiculo.query.filter_by(matricula=matricula).first()
-        if not vehiculo:
-            return jsonify({'error': 'Matrícula no encontrada'}), 403
-        
-        log = Log.query.filter_by(matricula=matricula, fecha_salida=None).first()
-        if not log:
-            return jsonify({'error': 'No hay registro de entrada para esta matrícula'}), 404
-        
-        log.fecha_salida = datetime.now()
-        
-        plaza = Plaza.query.filter_by(user_id=vehiculo.user_id, estado='ocupada').first()
-        if plaza:
-            plaza.estado = 'libre'
-            plaza.user_id = None
-        
-        db.session.commit()
-        return jsonify({
-            "message": "Salida registrada, hasta luego",
-            "matricula": matricula,
-            "hora_salida": log.fecha_salida.strftime('%Y-%m-%d %H:%M:%S')
-        }), 200
+

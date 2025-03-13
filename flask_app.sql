@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-02-2025 a las 16:13:23
+-- Tiempo de generación: 13-03-2025 a las 17:42:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -33,6 +33,23 @@ CREATE TABLE `log` (
   `fecha_entrada` datetime NOT NULL,
   `fecha_salida` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `log`
+--
+
+INSERT INTO `log` (`id`, `matricula`, `fecha_entrada`, `fecha_salida`) VALUES
+(1, '1234AAA', '2025-02-17 16:50:20', '2025-03-11 20:37:02'),
+(2, '4444III', '2025-02-21 16:11:06', '2025-02-21 16:17:11'),
+(3, '4444III', '2025-03-11 19:52:53', '2025-03-11 19:53:07'),
+(4, '4444III', '2025-03-11 19:55:49', '2025-03-11 19:56:07'),
+(5, '4444III', '2025-03-11 19:55:56', '2025-03-11 19:56:18'),
+(6, '1234AAA', '2025-03-11 20:39:55', '2025-03-13 17:34:26'),
+(7, '1234AAA', '2025-03-11 20:40:13', '2025-03-13 17:34:28'),
+(8, '1234AAA', '2025-03-13 17:34:32', '2025-03-13 17:34:35'),
+(9, '1234AAA', '2025-03-13 17:34:39', '2025-03-13 17:34:47'),
+(10, '1234AAA', '2025-03-13 17:34:49', '2025-03-13 17:34:50'),
+(11, '1234AAA', '2025-03-13 17:35:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -74,7 +91,7 @@ CREATE TABLE `plaza` (
 INSERT INTO `plaza` (`id`, `parking_id`, `numero`, `estado`, `user_id`) VALUES
 (1, 1, 1, 'reservada', 5),
 (2, 1, 2, 'reservada', 5),
-(3, 1, 3, 'libre', NULL),
+(3, 1, 3, 'ocupada', 5),
 (4, 1, 4, 'libre', NULL),
 (5, 1, 5, 'libre', NULL),
 (6, 1, 6, 'libre', NULL),
@@ -89,7 +106,7 @@ INSERT INTO `plaza` (`id`, `parking_id`, `numero`, `estado`, `user_id`) VALUES
 (15, 1, 15, 'reservada', 5),
 (16, 1, 16, 'libre', NULL),
 (17, 2, 17, 'reservada', 5),
-(18, 2, 18, 'libre', NULL),
+(18, 2, 18, 'reservada', 5),
 (19, 2, 19, 'libre', NULL),
 (20, 2, 20, 'libre', NULL),
 (21, 2, 21, 'libre', NULL),
@@ -149,7 +166,8 @@ CREATE TABLE `vehiculo` (
 --
 
 INSERT INTO `vehiculo` (`id`, `marca`, `modelo`, `matricula`, `tipo`, `user_id`) VALUES
-(1, 'Seat', 'Leon', '1234 aaa', 'coche', 5);
+(1, 'Seat', 'Leon', '1234AAA', 'coche', 5),
+(2, 'VW', 'Golf GTI', '4444III', 'coche', 6);
 
 --
 -- Índices para tablas volcadas
@@ -160,7 +178,7 @@ INSERT INTO `vehiculo` (`id`, `marca`, `modelo`, `matricula`, `tipo`, `user_id`)
 --
 ALTER TABLE `log`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `matricula` (`matricula`);
+  ADD KEY `log_ibfk_1` (`matricula`);
 
 --
 -- Indices de la tabla `parking`
@@ -199,7 +217,7 @@ ALTER TABLE `vehiculo`
 -- AUTO_INCREMENT de la tabla `log`
 --
 ALTER TABLE `log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `parking`
@@ -223,7 +241,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `vehiculo`
 --
 ALTER TABLE `vehiculo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
@@ -233,7 +251,7 @@ ALTER TABLE `vehiculo`
 -- Filtros para la tabla `log`
 --
 ALTER TABLE `log`
-  ADD CONSTRAINT `log_ibfk_1` FOREIGN KEY (`matricula`) REFERENCES `vehiculo` (`matricula`) ON DELETE CASCADE;
+  ADD CONSTRAINT `log_ibfk_1` FOREIGN KEY (`matricula`) REFERENCES `vehiculo` (`matricula`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `plaza`

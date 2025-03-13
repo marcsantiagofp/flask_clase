@@ -5,22 +5,20 @@ import requests
 import time
 import json
 
-
-# Configura la ruta de Tesseract si es necesario (Windows)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # IP de la cámara
-esp32_url = "http://172.16.6.11/capture"
+esp32_url = "http://172.16.6.129/capture"
 
 def ordenar_puntos(puntos):
     puntos = puntos.reshape(4, 2)
     suma = puntos.sum(axis=1)
     diferencia = np.diff(puntos, axis=1)
     return np.array([ 
-        puntos[np.argmin(suma)],  # Top-left
-        puntos[np.argmin(diferencia)],  # Top-right
-        puntos[np.argmax(suma)],  # Bottom-right
-        puntos[np.argmax(diferencia)]  # Bottom-left
+        puntos[np.argmin(suma)],
+        puntos[np.argmin(diferencia)],
+        puntos[np.argmax(suma)],
+        puntos[np.argmax(diferencia)]
     ], dtype="float32")
 
 def enderezar_imagen(imagen, puntos):
@@ -33,53 +31,53 @@ def enderezar_imagen(imagen, puntos):
     return cv2.warpPerspective(imagen, matriz, (int(ancho), int(alto)))
 
 def enviar_matricula_a_entrada(matricula):
-    url = "http://172.16.6.49:81/api/entrada"
+    url = "http://172.16.6.167:81/api/entrada"
     data = {"matricula": matricula}
     headers = {"Content-Type": "application/json"}
 
     try:
-        print(f"\n📤 Enviando solicitud a {url}")
-        print(f"📦 Datos enviados: {json.dumps(data, indent=2)}")
+        print(f"\n Enviando solicitud a {url}")
+        print(f" Datos enviados: {json.dumps(data, indent=2)}")
 
-        # Enviar la solicitud correctamente
-        response = requests.post(url, json=data, headers=headers)  # ✅ Enviar JSON correctamente
+        response = requests.post(url, json=data, headers=headers, timeout=10)
 
-        # Depuración de respuesta
-        print(f"📥 Código de estado: {response.status_code}")
+        print(f" Código de estado: {response.status_code}")
 
-        # Intentar decodificar JSON de la respuesta
+        print(f" Respuesta completa: {response.text}")
+
         try:
             respuesta_json = response.json()
-            print(f"📜 Respuesta JSON: {json.dumps(respuesta_json, indent=2)}")
+            print(f" Respuesta JSON: {json.dumps(respuesta_json, indent=2)}")
         except json.JSONDecodeError:
-            print("⚠️ Respuesta no es JSON válido:")
+            print(" Respuesta no es JSON válido:")
             print(response.text)
 
-        # Manejo de respuestas HTTP
         if response.status_code == 200:
-            print("✅ Entrada registrada exitosamente.")
+            print(" Entrada registrada exitosamente.")
             return True
         elif response.status_code == 400:
-            print("❌ Error: Datos incorrectos (400 Bad Request).")
+            print(" Error: Datos incorrectos (400 Bad Request).")
         elif response.status_code == 403:
-            print("🚫 Matrícula no registrada (403 Forbidden).")
+            print(" Matrícula no registrada (403 Forbidden).")
         elif response.status_code == 404:
-            print("🔍 Ruta no encontrada (404 Not Found).")
+            print(" Ruta no encontrada (404 Not Found).")
         elif response.status_code == 409:
-            print("🚗 Parking completo (409 Conflict).")
+            print(" Parking completo (409 Conflict).")
         else:
-            print(f"⚠️ Error desconocido ({response.status_code})")
+            print(f" Error desconocido ({response.status_code})")
 
-        return False  # Si llega aquí, es porque hubo un error
+        return False
         
-    except requests.ConnectionError:
-        print("❌ Error: No se pudo conectar con el servidor.")
-    except requests.Timeout:
-        print("⌛ Error: Tiempo de espera agotado.")
+    except requests.ConnectionError as e:
+        print(f" Error de conexión: {e}")
+    except requests.Timeout as e:
+        print(f" Error de tiempo de espera: {e}")
     except requests.RequestException as e:
-        print(f"⚠️ Error inesperado en la solicitud: {e}")
+        print(f" Error inesperado en la solicitud: {e}")
+        print(f"Detalles de la excepción: {str(e)}")
 
-    return False  # En caso de error, devolver False
+    return False
+
 
 while True:
     time.sleep(1.0)
@@ -93,7 +91,6 @@ while True:
                 print("Error: No se pudo decodificar la imagen.")
                 continue
 
-            # Mostrar imagen original
             cv2.imshow("Imagen Original", image)
 
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -112,7 +109,6 @@ while True:
                     if len(aproximacion) == 4:
                         contornos_candidatos.append(aproximacion)
 
-            # Dibuja los contornos encontrados
             debug_contours = image.copy()
             cv2.drawContours(debug_contours, contornos_candidatos, -1, (0, 255, 0), 2)
             cv2.imshow("Contornos Detectados", debug_contours)
@@ -125,12 +121,10 @@ while True:
                 rectangulo_enderezado = enderezar_imagen(image, rect)
                 cv2.imshow("Rectángulo Enderezado", rectangulo_enderezado)
 
-                # Preprocesamiento para mejorar OCR
                 gray_rect = cv2.cvtColor(rectangulo_enderezado, cv2.COLOR_BGR2GRAY)
                 _, thresh = cv2.threshold(gray_rect, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
                 cv2.imshow("Binarización para OCR", thresh)
 
-                # Aplicar OCR y mostrar en terminal
                 texto = pytesseract.image_to_string(thresh, config='--oem 3 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -c classify_bln_numeric_mode=1')
                 texto_limpio = ''.join(e for e in texto if e.isalnum() or e in [' ', '.', ','])
 
