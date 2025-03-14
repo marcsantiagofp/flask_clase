@@ -1,0 +1,47 @@
+#include <WiFi.h>
+#include <ESP32Servo.h>
+
+const int trigPin = 18;
+const int echoPin = 19;
+const int servoPin = 13;
+const int distanciaUmbral = 10;
+
+Servo servo;
+
+void setup()
+{
+    Serial.begin(115200);
+    
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+
+    servo.attach(servoPin);
+    servo.write(0);  // Posición inicial cerrada
+}
+
+void loop()
+{
+    float distancia = medirDistancia();
+    Serial.println(distancia);
+
+    if (distancia < distanciaUmbral)
+    {
+        servo.write(90);  // Abirr
+        delay(5000);      // Espera 5 segundos
+        servo.write(0);   // Cerrar
+    }
+
+    delay(500);
+}
+
+float medirDistancia()
+{
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    long duracion = pulseIn(echoPin, HIGH, 30000);
+    return (duracion / 2.0) / 29.1;
+}
