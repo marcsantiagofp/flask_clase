@@ -8,7 +8,7 @@ import json
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # IP de la cámara
-esp32_url = "http://172.16.6.129/capture"
+esp32_url = "http://172.16.5.74/capture"
 
 def ordenar_puntos(puntos):
     puntos = puntos.reshape(4, 2)

@@ -263,7 +263,7 @@ def register_routes(app):
         # Procesar la reserva de plaza
         if request.method == 'POST':
             plaza_id = request.form.get('plaza_id')
-            print("📍 ID de plaza seleccionada:", plaza_id)
+            print("ID de plaza seleccionada:", plaza_id)
 
             plaza = Plaza.query.filter_by(id=plaza_id).first()
             print("Plaza encontrada en BD:", plaza)
@@ -277,7 +277,7 @@ def register_routes(app):
                 return redirect(url_for('parkings'))
             else:
                 flash("La plaza no está disponible para la reserva.")
-                print("❌ La plaza no estaba disponible.")
+                print("La plaza no estaba disponible.")
 
         context = {
             'user': user,
